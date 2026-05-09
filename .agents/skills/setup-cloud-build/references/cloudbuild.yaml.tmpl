@@ -1,0 +1,16 @@
+steps:
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'enterprise-api'
+      - '--source'
+      - '.'
+      - '--region'
+      - 'us-central1'
+      - '--allow-unauthenticated'
+    dir: '.'
+timeout: '1200s'
+options:
+  logging: CLOUD_LOGGING_ONLY

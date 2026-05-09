@@ -1,0 +1,31 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-05-09T13:48:17-03:00",
+  "id": "antigravity-enterprise-playbook",
+  "duration": 78,
+  "title": "Building with Google Antigravity — The Enterprise Playbook",
+  "authors": "Developer Ecosystem - Americas Team",
+  "summary": "The Enterprise Playbook for Mastering the Agentic Future on Google Cloud",
+  "source": "antigravity-enterprise-playbook.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "cloud",
+    "ai",
+    "antigravity"
+  ],
+  "tags": [
+    "antigravity",
+    "cloud-run",
+    "enterprise",
+    "skills",
+    "web"
+  ],
+  "feedback": "https://github.com/mesmacosta/antigravitylab-01/issues",
+  "url": "antigravity-enterprise-playbook"
+}
