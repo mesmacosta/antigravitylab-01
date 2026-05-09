@@ -61,7 +61,7 @@ that blocks common OWASP attacks and rate-limits requests.
      --enforce-on-key=IP \
      --description="Rate limit: 100 req/min per IP"
    ```
-6. **Validate**: Run `bash scripts/verify_armor.sh`
+6. **Validate**: Run `bash .agents/skills/apply-cloud-armor/scripts/verify_armor.sh`
 
 ## Constraints
 - Use pre-configured OWASP rules, do NOT write custom CEL expressions.

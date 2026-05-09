@@ -450,7 +450,7 @@ gcloud compute security-policies create enterprise-waf \
   --description="Enterprise WAF policy for Cloud Run services"
 ```
 
-Warning
+Negative
 : **Architecture Note**: Cloud Armor cannot be attached directly to a Cloud Run service. It requires a Global External Application Load Balancer. Setting up a Load Balancer takes ~15 minutes and requires domain/SSL setup, which is outside the scope of this lab. The agent *authors* the WAF policy, but it remains unattached for now.
 
 ### Part 3: Canary Deployment
@@ -525,7 +525,7 @@ Across four labs, you converged the skills of four personas:
 * **Skills as Guardrails**: Pre-authored `SKILL.md` files constrain agent behavior and eliminate common errors.
 * **Approval Gates**: Critical operations (secret creation, traffic splitting) require human confirmation.
 * **Validation Scripts**: Every resource is verified by deterministic scripts — no guesswork.
-* **Cloud Shell Compatible**: Every command works out-of-the-box in GCP Cloud Shell.
+* **CLI Portable**: Every command uses standard `gcloud`/`bq`/`python3` tooling — no proprietary tools required.
 
 ### Clean up resources
 

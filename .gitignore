@@ -1,0 +1,12 @@
+# Generated during lab execution
+app/
+infra/
+test-doc.txt
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS
+.DS_Store

@@ -39,7 +39,7 @@ to stream document processing results for analysis.
 4. **Update `app/main.py`** to add BigQuery streaming insert logic
    using `google-cloud-bigquery` client library.
 5. **Add** `google-cloud-bigquery` to `app/requirements.txt`.
-6. **Validate**: Run `bash scripts/verify_bq.sh`
+6. **Validate**: Run `bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh`
 
 ## Constraints
 - Use `us-central1` location to co-locate with Cloud Run.

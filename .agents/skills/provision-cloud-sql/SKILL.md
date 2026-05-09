@@ -62,7 +62,7 @@ the initial schema for storing document embeddings.
    CREATE INDEX idx_documents_embedding ON documents
      USING ivfflat (embedding vector_cosine_ops) WITH (lists = 10);
    ```
-6. **Validate**: Run `bash scripts/verify_cloudsql.sh`
+6. **Validate**: Run `bash .agents/skills/provision-cloud-sql/scripts/verify_cloudsql.sh`
 
 ## Constraints
 - Use `db-f1-micro` tier to minimize cost in the lab environment.

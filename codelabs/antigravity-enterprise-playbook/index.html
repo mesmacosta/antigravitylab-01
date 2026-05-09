@@ -380,7 +380,7 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 <pre>gcloud compute security-policies create enterprise-waf \
   --description=&#34;Enterprise WAF policy for Cloud Run services&#34;
 </pre>
-<p>Warning : <strong>Architecture Note</strong>: Cloud Armor cannot be attached directly to a Cloud Run service. It requires a Global External Application Load Balancer. Setting up a Load Balancer takes ~15 minutes and requires domain/SSL setup, which is outside the scope of this lab. The agent <em>authors</em> the WAF policy, but it remains unattached for now.</p>
+<p>Negative : <strong>Architecture Note</strong>: Cloud Armor cannot be attached directly to a Cloud Run service. It requires a Global External Application Load Balancer. Setting up a Load Balancer takes ~15 minutes and requires domain/SSL setup, which is outside the scope of this lab. The agent <em>authors</em> the WAF policy, but it remains unattached for now.</p>
 <h2 is-upgraded>Part 3: Canary Deployment</h2>
 <p>The <code>canary-deploy</code> skill deploys a new revision without traffic, then gradually shifts:</p>
 <pre>gcloud run deploy enterprise-api \
@@ -449,7 +449,7 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 <li><strong>Skills as Guardrails</strong>: Pre-authored <code>SKILL.md</code> files constrain agent behavior and eliminate common errors.</li>
 <li><strong>Approval Gates</strong>: Critical operations (secret creation, traffic splitting) require human confirmation.</li>
 <li><strong>Validation Scripts</strong>: Every resource is verified by deterministic scripts — no guesswork.</li>
-<li><strong>Cloud Shell Compatible</strong>: Every command works out-of-the-box in GCP Cloud Shell.</li>
+<li><strong>CLI Portable</strong>: Every command uses standard <code>gcloud</code>/<code>bq</code>/<code>python3</code> tooling — no proprietary tools required.</li>
 </ul>
 <h2 is-upgraded>Clean up resources</h2>
 <p>To avoid ongoing charges, delete the resources created during this lab:</p>

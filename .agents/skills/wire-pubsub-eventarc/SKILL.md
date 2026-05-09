@@ -54,7 +54,7 @@ asynchronous processing on the Cloud Run service via Eventarc.
      --event-filters="bucket=${PROJECT_ID}-doc-intake" \
      --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
    ```
-6. **Validate**: Run `bash scripts/verify_pubsub.sh`
+6. **Validate**: Run `bash .agents/skills/wire-pubsub-eventarc/scripts/verify_pubsub.sh`
 
 ## Constraints
 - Use Eventarc triggers, NOT direct Pub/Sub push subscriptions.

@@ -42,7 +42,7 @@ as environment variables — zero hardcoded credentials.
      --region us-central1 \
      --set-secrets=GEMINI_API_KEY=gemini-api-key:latest
    ```
-4. **Validate**: Run `bash scripts/verify_secrets.sh`
+4. **Validate**: Run `bash .agents/skills/inject-secrets/scripts/verify_secrets.sh`
 
 ## Constraints
 - NEVER echo or print secret values to the terminal output.

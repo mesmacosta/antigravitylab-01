@@ -5,42 +5,48 @@ import os
 import re
 
 errors = []
+warnings = []
 app_dir = os.path.join(os.getcwd(), "app")
 
 # 1. Check main.py exists and has required endpoints
 main_path = os.path.join(app_dir, "main.py")
 if not os.path.exists(main_path):
-    errors.append("ERROR: app/main.py not found.")
+    errors.append("app/main.py not found.")
 else:
     content = open(main_path).read()
     if "/healthz" not in content:
-        errors.append("ERROR: app/main.py missing /healthz endpoint.")
+        errors.append("app/main.py missing /healthz endpoint.")
     if "os.environ" not in content and "os.getenv" not in content:
-        errors.append("WARNING: app/main.py may have hardcoded config (no os.environ usage found).")
+        warnings.append("app/main.py may have hardcoded config (no os.environ usage found).")
     # Check for hardcoded API keys
     if re.search(r'(AIza[0-9A-Za-z_-]{35}|[0-9]+-[a-z0-9_]{32})', content):
-        errors.append("ERROR: Possible hardcoded API key detected in main.py!")
+        errors.append("Possible hardcoded API key detected in main.py!")
 
 # 2. Check requirements.txt
 req_path = os.path.join(app_dir, "requirements.txt")
 if not os.path.exists(req_path):
-    errors.append("ERROR: app/requirements.txt not found.")
+    errors.append("app/requirements.txt not found.")
 else:
     reqs = open(req_path).read().lower()
     for dep in ["flask", "gunicorn"]:
         if dep not in reqs:
-            errors.append(f"ERROR: Missing dependency '{dep}' in requirements.txt.")
+            errors.append(f"Missing dependency '{dep}' in requirements.txt.")
 
 # 3. Check Procfile
 proc_path = os.path.join(app_dir, "Procfile")
 if not os.path.exists(proc_path):
-    errors.append("WARNING: app/Procfile not found (Buildpacks may still work without it).")
+    warnings.append("app/Procfile not found (Buildpacks may still work without it).")
 
 # 4. Check NO Dockerfile
 if os.path.exists(os.path.join(app_dir, "Dockerfile")):
-    errors.append("ERROR: Dockerfile found! Use Buildpacks instead — delete the Dockerfile.")
+    errors.append("Dockerfile found! Use Buildpacks instead — delete the Dockerfile.")
 
 # Report
+if warnings:
+    print("⚠️  Warnings:")
+    for w in warnings:
+        print(f"  {w}")
+
 if errors:
     print("❌ Scaffold validation FAILED:")
     for e in errors:
