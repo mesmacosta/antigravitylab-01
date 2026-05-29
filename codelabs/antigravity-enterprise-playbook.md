@@ -41,6 +41,7 @@ A serverless, event-driven **document processing pipeline** on Google Cloud that
   * [Antigravity IDE](https://antigravity.google/docs/ide/install) installed locally
   * *Note: The SDK and CLI will be used in Cloud Shell later.*
 * A Google Cloud Project with billing enabled
+* **Owner** role on the GCP project (or at minimum: `Editor` + `Security Admin` + `Service Usage Admin`)
 * [gcloud CLI](https://cloud.google.com/sdk/docs/install) installed and authenticated
 * [Git](https://git-scm.com/downloads) installed
 * Basic familiarity with Python and the terminal
@@ -320,9 +321,13 @@ Negative
 
 The `wire-pubsub-eventarc` skill will:
 
-1. Create a Pub/Sub topic for document processing
-2. Create a GCS bucket for document ingestion
-3. Create an Eventarc trigger routing `google.cloud.storage.object.v1.finalized` events to Cloud Run
+1. Grant the **GCS Service Agent** the `roles/pubsub.publisher` role (required so GCS can publish file upload events to Pub/Sub)
+2. Create a Pub/Sub topic for document processing
+3. Create a GCS bucket for document ingestion
+4. Create an Eventarc trigger routing `google.cloud.storage.object.v1.finalized` events to Cloud Run
+
+Negative
+: **Fresh Project Warning**: On a brand-new project, the Eventarc Service Agent may not be initialized yet. If the trigger creation fails with `FAILED_PRECONDITION`, wait 1-2 minutes after enabling the APIs and try again. The agent handles this automatically, but if you run into issues, you can force initialization by running: `gcloud eventarc providers describe google.cloud.storage --location=us-central1`
 
 ### Verify
 
@@ -488,6 +493,9 @@ The agent will:
 ### Part 1: Cloud Build CI/CD
 
 The `setup-cloud-build` skill reads the golden template from `references/cloudbuild.yaml.tmpl` and submits a build:
+
+Positive
+: Behind the scenes, the agent grants the **Cloud Build Service Account** the `roles/run.admin` and `roles/iam.serviceAccountUser` roles. This is required so Cloud Build can deploy new revisions to Cloud Run on your behalf.
 
 ```console
 gcloud builds submit --config=infra/cloudbuild.yaml app/

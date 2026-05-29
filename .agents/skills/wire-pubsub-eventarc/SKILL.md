@@ -27,23 +27,28 @@ asynchronous processing on the Cloud Run service via Eventarc.
    ```
    gcloud services enable eventarc.googleapis.com pubsub.googleapis.com
    ```
-2. **Create the Pub/Sub topic**:
+2. **Initialize the Eventarc service agent** (required on fresh projects):
+   ```
+   gcloud eventarc providers describe google.cloud.storage \
+     --location=us-central1
+   ```
+3. **Create the Pub/Sub topic**:
    ```
    gcloud pubsub topics create document-processing
    ```
-3. **Create a GCS bucket** for document ingestion:
+4. **Create a GCS bucket** for document ingestion:
    ```
    gcloud storage buckets create gs://${PROJECT_ID}-doc-intake \
      --location=us-central1
    ```
-4. **Grant GCS Service Agent the Pub/Sub Publisher role**:
+5. **Grant GCS Service Agent the Pub/Sub Publisher role**:
    ```
    STORAGE_SA="$(gcloud storage service-agent --project=$PROJECT_ID)"
    gcloud projects add-iam-policy-binding $PROJECT_ID \
      --member="serviceAccount:${STORAGE_SA}" \
      --role="roles/pubsub.publisher"
    ```
-5. **Create an Eventarc trigger** routing GCS finalize events to Cloud Run:
+6. **Create an Eventarc trigger** routing GCS finalize events to Cloud Run:
    ```
    PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')
    gcloud eventarc triggers create doc-upload-trigger \
@@ -54,7 +59,7 @@ asynchronous processing on the Cloud Run service via Eventarc.
      --event-filters="bucket=${PROJECT_ID}-doc-intake" \
      --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
    ```
-6. **Validate**: Run `bash .agents/skills/wire-pubsub-eventarc/scripts/verify_pubsub.sh`
+7. **Validate**: Run `bash .agents/skills/wire-pubsub-eventarc/scripts/verify_pubsub.sh`
 
 ## Constraints
 - Use Eventarc triggers, NOT direct Pub/Sub push subscriptions.

@@ -57,6 +57,7 @@
 </ul>
 </li>
 <li>A Google Cloud Project with billing enabled</li>
+<li><strong>Owner</strong> role on the GCP project (or at minimum: <code>Editor</code> + <code>Security Admin</code> + <code>Service Usage Admin</code>)</li>
 <li><a href="https://cloud.google.com/sdk/docs/install" target="_blank">gcloud CLI</a> installed and authenticated</li>
 <li><a href="https://git-scm.com/downloads" target="_blank">Git</a> installed</li>
 <li>Basic familiarity with Python and the terminal</li>
@@ -289,10 +290,12 @@ curl ${SERVICE_URL}/healthz
 <h2 is-upgraded>Part 2: Event-Driven Architecture</h2>
 <p>The <code>wire-pubsub-eventarc</code> skill will:</p>
 <ol type="1">
+<li>Grant the <strong>GCS Service Agent</strong> the <code>roles/pubsub.publisher</code> role (required so GCS can publish file upload events to Pub/Sub)</li>
 <li>Create a Pub/Sub topic for document processing</li>
 <li>Create a GCS bucket for document ingestion</li>
 <li>Create an Eventarc trigger routing <code>google.cloud.storage.object.v1.finalized</code> events to Cloud Run</li>
 </ol>
+<p>Negative : <strong>Fresh Project Warning</strong>: On a brand-new project, the Eventarc Service Agent may not be initialized yet. If the trigger creation fails with <code>FAILED_PRECONDITION</code>, wait 1-2 minutes after enabling the APIs and try again. The agent handles this automatically, but if you run into issues, you can force initialization by running: <code>gcloud eventarc providers describe google.cloud.storage --location=us-central1</code></p>
 <h2 is-upgraded>Verify</h2>
 <p>Run the verification scripts in your <strong>system terminal</strong> (from the <code>antigravitylab-01</code> directory), or ask the agent to verify for you:</p>
 <pre>bash .agents/skills/inject-secrets/scripts/verify_secrets.sh
@@ -409,6 +412,7 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 </ol>
 <h2 is-upgraded>Part 1: Cloud Build CI/CD</h2>
 <p>The <code>setup-cloud-build</code> skill reads the golden template from <code>references/cloudbuild.yaml.tmpl</code> and submits a build:</p>
+<p>Positive : Behind the scenes, the agent grants the <strong>Cloud Build Service Account</strong> the <code>roles/run.admin</code> and <code>roles/iam.serviceAccountUser</code> roles. This is required so Cloud Build can deploy new revisions to Cloud Run on your behalf.</p>
 <pre>gcloud builds submit --config=infra/cloudbuild.yaml app/
 </pre>
 <p>Verify the build succeeded:</p>
