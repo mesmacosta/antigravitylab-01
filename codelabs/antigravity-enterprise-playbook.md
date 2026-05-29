@@ -36,7 +36,11 @@ A serverless, event-driven **document processing pipeline** on Google Cloud that
 
 ### What you'll need
 
-* [Google Antigravity](https://antigravity.google/download) installed (Mac, Linux, or Windows)
+* The **Antigravity 2.0 Ecosystem** tools installed:
+  * Antigravity 2.0 (The Command Center)
+  * Legacy Antigravity IDE
+  * Antigravity CLI
+  * Google Antigravity SDK (Python library)
 * A Google Cloud Project with billing enabled
 * [gcloud CLI](https://cloud.google.com/sdk/docs/install) installed and authenticated
 * Basic familiarity with Python and the terminal
@@ -53,11 +57,11 @@ Duration: 5:00
 2. Select or create a new project.
 3. Ensure billing is enabled.
 
-### Understand the Dual-Environment Setup
+### Understand the Agentic Ecosystem Setup
 
-This workshop uses two interconnected environments:
-1. **The Control Plane (Your Local Machine)**: You must install Google Antigravity on your Mac/Windows/Linux machine. This is where the Agent lives and where you will type slash commands like `/developer`.
-2. **The Execution Environment (Google Cloud)**: The Agent will run `gcloud` commands locally on your machine to provision resources in your GCP project. You do *not* run Antigravity inside Cloud Shell.
+This workshop uses the interconnected Antigravity 2.0 Ecosystem:
+1. **The Tool Interfaces (Your Local Machine)**: You will interact with the agent through 4 distinct tools depending on the persona: the Legacy IDE, the 2.0 Command Center, the Python SDK, and the CLI.
+2. **The Execution Environment (Google Cloud)**: Regardless of the tool interface, the Agent will execute `gcloud` commands locally on your machine to provision resources in your GCP project.
 
 ### Authenticate locally
 
@@ -100,10 +104,10 @@ git clone https://github.com/mesmacosta/antigravitylab-01.git
 cd antigravitylab-01
 ```
 
-### Open the workspace in Antigravity
+### Open the workspace
 
-1. Open Google Antigravity on your local machine.
-2. Open the `antigravitylab-01` folder as a workspace (use **File > Open Folder** or the workspace picker).
+1. Choose the appropriate Antigravity tool for the current lab (we'll start with the Legacy IDE).
+2. Open the `antigravitylab-01` folder as a workspace.
 3. Start a new conversation in this workspace.
 
 ### Explore the workspace structure
@@ -151,12 +155,12 @@ Before we start building, let's understand the four personas and what each lab a
 
 Open `.agents/agents.md` to see the four personas:
 
-| Persona | Role | Lab |
-|---------|------|-----|
-| **@developer** | Scaffolds Flask microservices for Cloud Run | Lab 1 |
-| **@architect** | Secures with Secret Manager + wires Eventarc | Lab 2 |
-| **@dataengineer** | Provisions Cloud SQL + BigQuery pipelines | Lab 3 |
-| **@sre** | Sets up CI/CD, WAF, and canary deploys | Lab 4 |
+| Persona | Role | Ecosystem Tool | Lab |
+|---------|------|----------------|-----|
+| **@developer** | Scaffolds Flask microservices for Cloud Run | **Legacy IDE** | Lab 1 |
+| **@architect** | Secures with Secret Manager + wires Eventarc | **Antigravity 2.0 Desktop** | Lab 2 |
+| **@dataengineer** | Provisions Cloud SQL + BigQuery pipelines | **Antigravity SDK** | Lab 3 |
+| **@sre** | Sets up CI/CD, WAF, and canary deploys | **Antigravity CLI** | Lab 4 |
 
 ### Skills as Guardrails
 
@@ -185,7 +189,7 @@ Duration: 15:00
 
 ### Run the workflow
 
-In the Antigravity Agent Manager, type:
+Open the **Legacy Antigravity IDE** and type:
 
 ```
 /developer
@@ -259,7 +263,7 @@ Duration: 15:00
 
 ### Run the workflow
 
-In the Agent Manager, type:
+Open **Antigravity 2.0 (The Command Center)** and type:
 
 ```
 /architect
@@ -339,10 +343,13 @@ Duration: 15:00
 
 ### Run the workflow
 
-In the Agent Manager, type:
+Using the **Google Antigravity SDK**, trigger the workflow programmatically in Python:
 
-```
-/dataengineer
+```python
+import antigravity
+
+agent = antigravity.Agent(workspace="antigravitylab-01")
+agent.trigger_workflow("/dataengineer")
 ```
 
 The agent will:
@@ -410,10 +417,10 @@ Duration: 15:00
 
 ### Run the workflow
 
-In the Agent Manager, type:
+Using the **Antigravity CLI** in your terminal, type:
 
-```
-/sre
+```console
+antigravity run /sre
 ```
 
 The agent will:
@@ -513,12 +520,12 @@ Congratulations! You have built a complete enterprise-grade system on Google Clo
 
 Across four labs, you converged the skills of four personas:
 
-| Lab | Persona | What You Built |
-|-----|---------|----------------|
-| 1 | Developer | Flask API on Cloud Run with Buildpacks |
-| 2 | Architect | Secret Manager + Eventarc event pipeline |
-| 3 | Data Engineer | Cloud SQL pgvector + BigQuery streaming |
-| 4 | SRE | Cloud Build CI/CD + Cloud Armor WAF (policy authored) + Canary deploys |
+| Lab | Persona | Tool | What You Built |
+|-----|---------|------|----------------|
+| 1 | Developer | Legacy IDE | Flask API on Cloud Run with Buildpacks |
+| 2 | Architect | Antigravity 2.0 | Secret Manager + Eventarc event pipeline |
+| 3 | Data Engineer | Python SDK | Cloud SQL pgvector + BigQuery streaming |
+| 4 | SRE | Antigravity CLI | Cloud Build CI/CD + Cloud Armor WAF (policy authored) + Canary deploys |
 
 ### Key takeaways
 
@@ -526,6 +533,12 @@ Across four labs, you converged the skills of four personas:
 * **Approval Gates**: Critical operations (secret creation, traffic splitting) require human confirmation.
 * **Validation Scripts**: Every resource is verified by deterministic scripts — no guesswork.
 * **CLI Portable**: Every command uses standard `gcloud`/`bq`/`python3` tooling — no proprietary tools required.
+
+### Beyond the Lab: The Official Skills Registry
+
+In this lab, we used highly constrained "Guardrail Skills" to ensure a deterministic workshop experience. In the real world, you'll want to equip your agents with broad, generalized knowledge.
+
+Explore the official **[Google Skills Repository](https://github.com/google/skills)** to discover foundational skills like `cloud-run-basics` and `bigquery-basics` that empower your agents to architect and deploy resources dynamically.
 
 ### Clean up resources
 
@@ -566,6 +579,7 @@ gcloud artifacts repositories delete cloud-run-source-deploy \
 * [Getting Started with Google Antigravity](https://codelabs.developers.google.com/getting-started-google-antigravity)
 * [Authoring Antigravity Skills](https://codelabs.developers.google.com/getting-started-with-antigravity-skills)
 * [Build and Deploy to GCP with Antigravity](https://codelabs.developers.google.com/build-and-deploy-gcp-with-antigravity)
+* [Official Google Skills Repository](https://github.com/google/skills)
 * [Antigravity Documentation](https://antigravity.google/docs)
 
 ### Reference docs

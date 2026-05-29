@@ -50,7 +50,13 @@
 </ul>
 <h2 is-upgraded>What you&#39;ll need</h2>
 <ul>
-<li><a href="https://antigravity.google/download" target="_blank">Google Antigravity</a> installed (Mac, Linux, or Windows)</li>
+<li>The <strong>Antigravity 2.0 Ecosystem</strong> tools installed: <ul>
+<li>Antigravity 2.0 (The Command Center)</li>
+<li>Legacy Antigravity IDE</li>
+<li>Antigravity CLI</li>
+<li>Google Antigravity SDK (Python library)</li>
+</ul>
+</li>
 <li>A Google Cloud Project with billing enabled</li>
 <li><a href="https://cloud.google.com/sdk/docs/install" target="_blank">gcloud CLI</a> installed and authenticated</li>
 <li>Basic familiarity with Python and the terminal</li>
@@ -67,11 +73,11 @@
 <li>Select or create a new project.</li>
 <li>Ensure billing is enabled.</li>
 </ol>
-<h2 is-upgraded>Understand the Dual-Environment Setup</h2>
-<p>This workshop uses two interconnected environments:</p>
+<h2 is-upgraded>Understand the Agentic Ecosystem Setup</h2>
+<p>This workshop uses the interconnected Antigravity 2.0 Ecosystem:</p>
 <ol type="1">
-<li><strong>The Control Plane (Your Local Machine)</strong>: You must install Google Antigravity on your Mac/Windows/Linux machine. This is where the Agent lives and where you will type slash commands like <code>/developer</code>.</li>
-<li><strong>The Execution Environment (Google Cloud)</strong>: The Agent will run <code>gcloud</code> commands locally on your machine to provision resources in your GCP project. You do <em>not</em> run Antigravity inside Cloud Shell.</li>
+<li><strong>The Tool Interfaces (Your Local Machine)</strong>: You will interact with the agent through 4 distinct tools depending on the persona: the Legacy IDE, the 2.0 Command Center, the Python SDK, and the CLI.</li>
+<li><strong>The Execution Environment (Google Cloud)</strong>: Regardless of the tool interface, the Agent will execute <code>gcloud</code> commands locally on your machine to provision resources in your GCP project.</li>
 </ol>
 <h2 is-upgraded>Authenticate locally</h2>
 <p>Since the Agent runs on your local machine, you must authenticate your local <code>gcloud</code> CLI:</p>
@@ -100,10 +106,10 @@ echo &#34;Project ID: $PROJECT_ID&#34;
 <pre>git clone https://github.com/mesmacosta/antigravitylab-01.git
 cd antigravitylab-01
 </pre>
-<h2 is-upgraded>Open the workspace in Antigravity</h2>
+<h2 is-upgraded>Open the workspace</h2>
 <ol type="1">
-<li>Open Google Antigravity on your local machine.</li>
-<li>Open the <code>antigravitylab-01</code> folder as a workspace (use <strong>File &gt; Open Folder</strong> or the workspace picker).</li>
+<li>Choose the appropriate Antigravity tool for the current lab (we&#39;ll start with the Legacy IDE).</li>
+<li>Open the <code>antigravitylab-01</code> folder as a workspace.</li>
 <li>Start a new conversation in this workspace.</li>
 </ol>
 <h2 is-upgraded>Explore the workspace structure</h2>
@@ -144,22 +150,27 @@ cd antigravitylab-01
 <table>
 <tr><td colspan="1" rowspan="1"><p>Persona</p>
 </td><td colspan="1" rowspan="1"><p>Role</p>
+</td><td colspan="1" rowspan="1"><p>Ecosystem Tool</p>
 </td><td colspan="1" rowspan="1"><p>Lab</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p><strong>@developer</strong></p>
 </td><td colspan="1" rowspan="1"><p>Scaffolds Flask microservices for Cloud Run</p>
+</td><td colspan="1" rowspan="1"><p><strong>Legacy IDE</strong></p>
 </td><td colspan="1" rowspan="1"><p>Lab 1</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p><strong>@architect</strong></p>
 </td><td colspan="1" rowspan="1"><p>Secures with Secret Manager + wires Eventarc</p>
+</td><td colspan="1" rowspan="1"><p><strong>Antigravity 2.0 Desktop</strong></p>
 </td><td colspan="1" rowspan="1"><p>Lab 2</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p><strong>@dataengineer</strong></p>
 </td><td colspan="1" rowspan="1"><p>Provisions Cloud SQL + BigQuery pipelines</p>
+</td><td colspan="1" rowspan="1"><p><strong>Antigravity SDK</strong></p>
 </td><td colspan="1" rowspan="1"><p>Lab 3</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p><strong>@sre</strong></p>
 </td><td colspan="1" rowspan="1"><p>Sets up CI/CD, WAF, and canary deploys</p>
+</td><td colspan="1" rowspan="1"><p><strong>Antigravity CLI</strong></p>
 </td><td colspan="1" rowspan="1"><p>Lab 4</p>
 </td></tr>
 </table>
@@ -187,7 +198,7 @@ cd antigravitylab-01
         <p><strong>Focus</strong>: Moving from the &#34;vibe of an idea&#34; to a deployed Cloud Run service.</p>
 <p><strong>Skill activated</strong>: <code>scaffold-cloud-run-service</code></p>
 <h2 is-upgraded>Run the workflow</h2>
-<p>In the Antigravity Agent Manager, type:</p>
+<p>Open the <strong>Legacy Antigravity IDE</strong> and type:</p>
 <pre><code>/developer
 </code></pre>
 <p>The agent will:</p>
@@ -243,7 +254,7 @@ curl ${SERVICE_URL}/healthz
         <p><strong>Focus</strong>: Designing the security perimeter and event-driven architecture.</p>
 <p><strong>Skills activated</strong>: <code>inject-secrets</code>, <code>wire-pubsub-eventarc</code></p>
 <h2 is-upgraded>Run the workflow</h2>
-<p>In the Agent Manager, type:</p>
+<p>Open <strong>Antigravity 2.0 (The Command Center)</strong> and type:</p>
 <pre><code>/architect
 </code></pre>
 <p>The agent will:</p>
@@ -302,8 +313,11 @@ gcloud storage cp test-doc.txt gs://${PROJECT_ID}-doc-intake/
         <p><strong>Focus</strong>: Building the data layer for document embeddings and analytics.</p>
 <p><strong>Skills activated</strong>: <code>provision-cloud-sql</code>, <code>stream-to-bigquery</code></p>
 <h2 is-upgraded>Run the workflow</h2>
-<p>In the Agent Manager, type:</p>
-<pre><code>/dataengineer
+<p>Using the <strong>Google Antigravity SDK</strong>, trigger the workflow programmatically in Python:</p>
+<pre><code language="language-python" class="language-python">import antigravity
+
+agent = antigravity.Agent(workspace=&#34;antigravitylab-01&#34;)
+agent.trigger_workflow(&#34;/dataengineer&#34;)
 </code></pre>
 <p>The agent will:</p>
 <ol type="1">
@@ -353,9 +367,9 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
         <p><strong>Focus</strong>: CI/CD automation, security hardening, and safe deployments.</p>
 <p><strong>Skills activated</strong>: <code>setup-cloud-build</code>, <code>apply-cloud-armor</code>, <code>canary-deploy</code></p>
 <h2 is-upgraded>Run the workflow</h2>
-<p>In the Agent Manager, type:</p>
-<pre><code>/sre
-</code></pre>
+<p>Using the <strong>Antigravity CLI</strong> in your terminal, type:</p>
+<pre>antigravity run /sre
+</pre>
 <p>The agent will:</p>
 <ol type="1">
 <li>Adopt the <strong>@sre</strong> persona</li>
@@ -425,22 +439,27 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 <table>
 <tr><td colspan="1" rowspan="1"><p>Lab</p>
 </td><td colspan="1" rowspan="1"><p>Persona</p>
+</td><td colspan="1" rowspan="1"><p>Tool</p>
 </td><td colspan="1" rowspan="1"><p>What You Built</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>1</p>
 </td><td colspan="1" rowspan="1"><p>Developer</p>
+</td><td colspan="1" rowspan="1"><p>Legacy IDE</p>
 </td><td colspan="1" rowspan="1"><p>Flask API on Cloud Run with Buildpacks</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>2</p>
 </td><td colspan="1" rowspan="1"><p>Architect</p>
+</td><td colspan="1" rowspan="1"><p>Antigravity 2.0</p>
 </td><td colspan="1" rowspan="1"><p>Secret Manager + Eventarc event pipeline</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>3</p>
 </td><td colspan="1" rowspan="1"><p>Data Engineer</p>
+</td><td colspan="1" rowspan="1"><p>Python SDK</p>
 </td><td colspan="1" rowspan="1"><p>Cloud SQL pgvector + BigQuery streaming</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>4</p>
 </td><td colspan="1" rowspan="1"><p>SRE</p>
+</td><td colspan="1" rowspan="1"><p>Antigravity CLI</p>
 </td><td colspan="1" rowspan="1"><p>Cloud Build CI/CD + Cloud Armor WAF (policy authored) + Canary deploys</p>
 </td></tr>
 </table>
@@ -451,6 +470,9 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 <li><strong>Validation Scripts</strong>: Every resource is verified by deterministic scripts — no guesswork.</li>
 <li><strong>CLI Portable</strong>: Every command uses standard <code>gcloud</code>/<code>bq</code>/<code>python3</code> tooling — no proprietary tools required.</li>
 </ul>
+<h2 is-upgraded>Beyond the Lab: The Official Skills Registry</h2>
+<p>In this lab, we used highly constrained &#34;Guardrail Skills&#34; to ensure a deterministic workshop experience. In the real world, you&#39;ll want to equip your agents with broad, generalized knowledge.</p>
+<p>Explore the official <a href="https://github.com/google/skills" target="_blank"><strong>Google Skills Repository</strong></a> to discover foundational skills like <code>cloud-run-basics</code> and <code>bigquery-basics</code> that empower your agents to architect and deploy resources dynamically.</p>
 <h2 is-upgraded>Clean up resources</h2>
 <p>To avoid ongoing charges, delete the resources created during this lab:</p>
 <pre># Delete Cloud Run service
@@ -486,6 +508,7 @@ gcloud artifacts repositories delete cloud-run-source-deploy \
 <li><a href="https://codelabs.developers.google.com/getting-started-google-antigravity" target="_blank">Getting Started with Google Antigravity</a></li>
 <li><a href="https://codelabs.developers.google.com/getting-started-with-antigravity-skills" target="_blank">Authoring Antigravity Skills</a></li>
 <li><a href="https://codelabs.developers.google.com/build-and-deploy-gcp-with-antigravity" target="_blank">Build and Deploy to GCP with Antigravity</a></li>
+<li><a href="https://github.com/google/skills" target="_blank">Official Google Skills Repository</a></li>
 <li><a href="https://antigravity.google/docs" target="_blank">Antigravity Documentation</a></li>
 </ul>
 <h2 is-upgraded>Reference docs</h2>
