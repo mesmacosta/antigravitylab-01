@@ -109,6 +109,9 @@ cd antigravitylab-01
 2. Open the `antigravitylab-01` folder as a workspace (e.g., via **File > Open Folder**).
 3. Start a new conversation in this workspace.
 
+Positive
+: **Troubleshooting Tip**: Generative AI workflows can occasionally get confused. If the agent ever seems stuck or provides an unexpected response, simply tell it to "Stop" and re-run your slash command, or open a fresh conversation.
+
 ### Explore the workspace structure
 
 Take a moment to explore the pre-authored files. In the Antigravity Editor or your terminal, run:
@@ -225,6 +228,9 @@ cd app && gcloud run deploy enterprise-api \
 
 Positive
 : `gcloud run deploy --source .` uses **Google Cloud Buildpacks** to automatically containerize your Python app. No Dockerfile needed!
+
+Negative
+: **Enterprise Warning**: If you are running this in a corporate Google Cloud environment, the deployment might fail with an IAM error regarding `allUsers`. This is caused by a **Domain Restricted Sharing** Organization Policy. If this happens, ask the agent to "Deploy again, but do not allow unauthenticated access."
 
 ### Validate the scaffold
 
@@ -395,7 +401,7 @@ gcloud sql instances create enterprise-db \
 ```
 
 Positive
-: To avoid interactive password prompts that can hang agent workflows, the agent will output the schema SQL and instruct you to run it visually using **Cloud SQL Studio** in the Google Cloud Console.
+: To avoid interactive password prompts that can hang agent workflows, the agent will output the schema SQL and instruct you to run it visually using **Cloud SQL Studio** in the Google Cloud Console. *(Hint: When asked to log in to Cloud SQL Studio, use the username `postgres` and leave the password blank).*
 
 Negative
 : **Wait Time**: The `gcloud sql instances create` command takes **3-5 minutes** to complete. This is normal — the agent will wait. In a live workshop, this is a good time for the presenter to explain the pgvector embedding architecture.

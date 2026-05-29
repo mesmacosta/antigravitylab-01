@@ -111,6 +111,7 @@ cd antigravitylab-01
 <li>Open the <code>antigravitylab-01</code> folder as a workspace (e.g., via <strong>File &gt; Open Folder</strong>).</li>
 <li>Start a new conversation in this workspace.</li>
 </ol>
+<p>Positive : <strong>Troubleshooting Tip</strong>: Generative AI workflows can occasionally get confused. If the agent ever seems stuck or provides an unexpected response, simply tell it to &#34;Stop&#34; and re-run your slash command, or open a fresh conversation.</p>
 <h2 is-upgraded>Explore the workspace structure</h2>
 <p>Take a moment to explore the pre-authored files. In the Antigravity Editor or your terminal, run:</p>
 <pre>find .agents -type f | sort
@@ -227,6 +228,7 @@ cd antigravitylab-01
   --allow-unauthenticated
 </pre>
 <p>Positive : <code>gcloud run deploy --source .</code> uses <strong>Google Cloud Buildpacks</strong> to automatically containerize your Python app. No Dockerfile needed!</p>
+<p>Negative : <strong>Enterprise Warning</strong>: If you are running this in a corporate Google Cloud environment, the deployment might fail with an IAM error regarding <code>allUsers</code>. This is caused by a <strong>Domain Restricted Sharing</strong> Organization Policy. If this happens, ask the agent to &#34;Deploy again, but do not allow unauthenticated access.&#34;</p>
 <h2 is-upgraded>Validate the scaffold</h2>
 <p>The agent runs the validation script automatically, but you can also run it manually:</p>
 <pre>python3 .agents/skills/scaffold-cloud-run-service/scripts/validate_scaffold.py
@@ -349,7 +351,9 @@ agent.trigger_workflow(&#34;/dataengineer&#34;)
   --region=us-central1 \
   --database-flags=cloudsql.enable_pgvector=on
 </pre>
-<p>Positive : To avoid interactive password prompts that can hang agent workflows, the agent will output the schema SQL and instruct you to run it visually using <strong>Cloud SQL Studio</strong> in the Google Cloud Console.</p>
+<p>Positive : To avoid interactive password prompts that can hang agent workflows, the agent will output the schema SQL and instruct you to run it visually using <strong>Cloud SQL Studio</strong> in the Google Cloud Console. <em>(Hint: When asked to log in to Cloud SQL Studio, use the username </em></p>
+<p><em><code>postgres</code></em></p>
+<p><em> and leave the password blank).</em></p>
 <p>Negative : <strong>Wait Time</strong>: The <code>gcloud sql instances create</code> command takes <strong>3-5 minutes</strong> to complete. This is normal — the agent will wait. In a live workshop, this is a good time for the presenter to explain the pgvector embedding architecture.</p>
 <h2 is-upgraded>Part 2: BigQuery Analytics</h2>
 <p>The <code>stream-to-bigquery</code> skill creates:</p>
