@@ -77,7 +77,7 @@
 <p>This workshop uses the interconnected Antigravity 2.0 Ecosystem:</p>
 <ol type="1">
 <li><strong>The Tool Interfaces (Your Local Machine)</strong>: You will interact with the agent through 4 distinct tools depending on the persona: the Antigravity IDE, the 2.0 Command Center, the Python SDK, and the CLI.</li>
-<li><strong>The Execution Environment (Google Cloud)</strong>: Regardless of the tool interface, the Agent will execute <code>gcloud</code> commands locally on your machine to provision resources in your GCP project.</li>
+<li><strong>The Execution Environment (Hybrid)</strong>: Lab 1 and 2 execute <code>gcloud</code> commands locally. For Lab 3 and 4, we will transition to <strong>GCP Cloud Shell</strong> to demonstrate that the Antigravity SDK and CLI can run entirely in the cloud without any local dependencies.</li>
 </ol>
 <h2 is-upgraded>Authenticate locally</h2>
 <p>Since the Agent runs on your local machine, you must authenticate your local <code>gcloud</code> CLI:</p>
@@ -313,7 +313,11 @@ gcloud storage cp test-doc.txt gs://${PROJECT_ID}-doc-intake/
         <p><strong>Focus</strong>: Building the data layer for document embeddings and analytics.</p>
 <p><strong>Skills activated</strong>: <code>provision-cloud-sql</code>, <code>stream-to-bigquery</code></p>
 <h2 is-upgraded>Run the workflow</h2>
-<p>Using the <strong>Google Antigravity SDK</strong>, trigger the workflow programmatically in Python:</p>
+<p>To demonstrate that Antigravity tools can run anywhere, we will transition to the cloud. <strong>Open Google Cloud Shell</strong> in your browser.</p>
+<p>First, install the Python SDK:</p>
+<pre>pip install google-antigravity-sdk
+</pre>
+<p>Next, trigger the workflow programmatically in Python. Create a file named <code>trigger.py</code> and run it:</p>
 <pre><code language="language-python" class="language-python">import antigravity
 
 agent = antigravity.Agent(workspace=&#34;antigravitylab-01&#34;)
@@ -367,7 +371,11 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
         <p><strong>Focus</strong>: CI/CD automation, security hardening, and safe deployments.</p>
 <p><strong>Skills activated</strong>: <code>setup-cloud-build</code>, <code>apply-cloud-armor</code>, <code>canary-deploy</code></p>
 <h2 is-upgraded>Run the workflow</h2>
-<p>Using the <strong>Antigravity CLI</strong> in your terminal, type:</p>
+<p>Continue using your open <strong>Google Cloud Shell</strong> session.</p>
+<p>First, install the Antigravity CLI:</p>
+<pre>pip install google-antigravity-cli
+</pre>
+<p>Then, trigger the workflow via the terminal:</p>
 <pre>antigravity run /sre
 </pre>
 <p>The agent will:</p>
@@ -468,7 +476,7 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 <li><strong>Skills as Guardrails</strong>: Pre-authored <code>SKILL.md</code> files constrain agent behavior and eliminate common errors.</li>
 <li><strong>Approval Gates</strong>: Critical operations (secret creation, traffic splitting) require human confirmation.</li>
 <li><strong>Validation Scripts</strong>: Every resource is verified by deterministic scripts — no guesswork.</li>
-<li><strong>CLI Portable</strong>: Every command uses standard <code>gcloud</code>/<code>bq</code>/<code>python3</code> tooling — no proprietary tools required.</li>
+<li><strong>CLI Portable</strong>: Every command uses standard tooling. The SDK and CLI run seamlessly in Cloud Shell, proving that the Antigravity ecosystem doesn&#39;t strictly require a local desktop UI.</li>
 </ul>
 <h2 is-upgraded>Beyond the Lab: The Official Skills Registry</h2>
 <p>In this lab, we used highly constrained &#34;Guardrail Skills&#34; to ensure a deterministic workshop experience. In the real world, you&#39;ll want to equip your agents with broad, generalized knowledge.</p>

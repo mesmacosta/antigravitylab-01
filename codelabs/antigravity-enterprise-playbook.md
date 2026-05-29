@@ -61,7 +61,7 @@ Duration: 5:00
 
 This workshop uses the interconnected Antigravity 2.0 Ecosystem:
 1. **The Tool Interfaces (Your Local Machine)**: You will interact with the agent through 4 distinct tools depending on the persona: the Antigravity IDE, the 2.0 Command Center, the Python SDK, and the CLI.
-2. **The Execution Environment (Google Cloud)**: Regardless of the tool interface, the Agent will execute `gcloud` commands locally on your machine to provision resources in your GCP project.
+2. **The Execution Environment (Hybrid)**: Lab 1 and 2 execute `gcloud` commands locally. For Lab 3 and 4, we will transition to **GCP Cloud Shell** to demonstrate that the Antigravity SDK and CLI can run entirely in the cloud without any local dependencies.
 
 ### Authenticate locally
 
@@ -343,7 +343,15 @@ Duration: 20:00
 
 ### Run the workflow
 
-Using the **Google Antigravity SDK**, trigger the workflow programmatically in Python:
+To demonstrate that Antigravity tools can run anywhere, we will transition to the cloud. **Open Google Cloud Shell** in your browser.
+
+First, install the Python SDK:
+
+```console
+pip install google-antigravity-sdk
+```
+
+Next, trigger the workflow programmatically in Python. Create a file named `trigger.py` and run it:
 
 ```python
 import antigravity
@@ -417,7 +425,15 @@ Duration: 10:00
 
 ### Run the workflow
 
-Using the **Antigravity CLI** in your terminal, type:
+Continue using your open **Google Cloud Shell** session.
+
+First, install the Antigravity CLI:
+
+```console
+pip install google-antigravity-cli
+```
+
+Then, trigger the workflow via the terminal:
 
 ```console
 antigravity run /sre
@@ -532,7 +548,7 @@ Across four labs, you converged the skills of four personas:
 * **Skills as Guardrails**: Pre-authored `SKILL.md` files constrain agent behavior and eliminate common errors.
 * **Approval Gates**: Critical operations (secret creation, traffic splitting) require human confirmation.
 * **Validation Scripts**: Every resource is verified by deterministic scripts — no guesswork.
-* **CLI Portable**: Every command uses standard `gcloud`/`bq`/`python3` tooling — no proprietary tools required.
+* **CLI Portable**: Every command uses standard tooling. The SDK and CLI run seamlessly in Cloud Shell, proving that the Antigravity ecosystem doesn't strictly require a local desktop UI.
 
 ### Beyond the Lab: The Official Skills Registry
 
