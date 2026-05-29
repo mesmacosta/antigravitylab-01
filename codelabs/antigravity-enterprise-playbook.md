@@ -106,7 +106,7 @@ cd antigravitylab-01
 ### Open the workspace
 
 1. Choose the appropriate Antigravity tool for the current lab (we'll start with the Antigravity IDE).
-2. Open the `antigravitylab-01` folder as a workspace.
+2. Open the `antigravitylab-01` folder as a workspace (e.g., via **File > Open Folder**).
 3. Start a new conversation in this workspace.
 
 ### Explore the workspace structure
@@ -262,7 +262,7 @@ Duration: 10:00
 
 ### Run the workflow
 
-Open **Antigravity 2.0 (The Command Center)** and type:
+Open **Antigravity 2.0 (The Command Center)**, ensure you have opened the `antigravitylab-01` workspace folder, and type:
 
 ```
 /architect
@@ -363,7 +363,7 @@ Next, trigger the workflow programmatically in Python. Create a file named `trig
 ```python
 import antigravity
 
-agent = antigravity.Agent(workspace="antigravitylab-01")
+agent = antigravity.Agent(workspace=".")
 agent.trigger_workflow("/dataengineer")
 ```
 
@@ -440,9 +440,10 @@ First, install the Antigravity CLI:
 pip install google-antigravity-cli
 ```
 
-Then, trigger the workflow via the terminal:
+Then, trigger the workflow via the terminal (ensure you are in the lab directory):
 
 ```console
+cd antigravitylab-01
 antigravity run /sre
 ```
 
@@ -568,6 +569,9 @@ Explore the official **[Google Skills Repository](https://github.com/google/skil
 To avoid ongoing charges, delete the resources created during this lab:
 
 ```console
+# Ensure Project ID is set
+export PROJECT_ID=$(gcloud config get-value project)
+
 # Delete Cloud Run service
 gcloud run services delete enterprise-api --region us-central1 --quiet
 

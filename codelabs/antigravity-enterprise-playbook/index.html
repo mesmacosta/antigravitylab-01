@@ -108,7 +108,7 @@ cd antigravitylab-01
 <h2 is-upgraded>Open the workspace</h2>
 <ol type="1">
 <li>Choose the appropriate Antigravity tool for the current lab (we&#39;ll start with the Antigravity IDE).</li>
-<li>Open the <code>antigravitylab-01</code> folder as a workspace.</li>
+<li>Open the <code>antigravitylab-01</code> folder as a workspace (e.g., via <strong>File &gt; Open Folder</strong>).</li>
 <li>Start a new conversation in this workspace.</li>
 </ol>
 <h2 is-upgraded>Explore the workspace structure</h2>
@@ -253,7 +253,7 @@ curl ${SERVICE_URL}/healthz
         <p><strong>Focus</strong>: Designing the security perimeter and event-driven architecture.</p>
 <p><strong>Skills activated</strong>: <code>inject-secrets</code>, <code>wire-pubsub-eventarc</code></p>
 <h2 is-upgraded>Run the workflow</h2>
-<p>Open <strong>Antigravity 2.0 (The Command Center)</strong> and type:</p>
+<p>Open <strong>Antigravity 2.0 (The Command Center)</strong>, ensure you have opened the <code>antigravitylab-01</code> workspace folder, and type:</p>
 <pre><code>/architect
 </code></pre>
 <p>The agent will:</p>
@@ -324,7 +324,7 @@ export PROJECT_ID=$(gcloud config get-value project)
 <p>Next, trigger the workflow programmatically in Python. Create a file named <code>trigger.py</code> and run it:</p>
 <pre><code language="language-python" class="language-python">import antigravity
 
-agent = antigravity.Agent(workspace=&#34;antigravitylab-01&#34;)
+agent = antigravity.Agent(workspace=&#34;.&#34;)
 agent.trigger_workflow(&#34;/dataengineer&#34;)
 </code></pre>
 <p>The agent will:</p>
@@ -379,8 +379,9 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 <p>First, install the Antigravity CLI:</p>
 <pre>pip install google-antigravity-cli
 </pre>
-<p>Then, trigger the workflow via the terminal:</p>
-<pre>antigravity run /sre
+<p>Then, trigger the workflow via the terminal (ensure you are in the lab directory):</p>
+<pre>cd antigravitylab-01
+antigravity run /sre
 </pre>
 <p>The agent will:</p>
 <ol type="1">
@@ -487,7 +488,10 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 <p>Explore the official <a href="https://github.com/google/skills" target="_blank"><strong>Google Skills Repository</strong></a> to discover foundational skills like <code>cloud-run-basics</code> and <code>bigquery-basics</code> that empower your agents to architect and deploy resources dynamically.</p>
 <h2 is-upgraded>Clean up resources</h2>
 <p>To avoid ongoing charges, delete the resources created during this lab:</p>
-<pre># Delete Cloud Run service
+<pre># Ensure Project ID is set
+export PROJECT_ID=$(gcloud config get-value project)
+
+# Delete Cloud Run service
 gcloud run services delete enterprise-api --region us-central1 --quiet
 
 # Delete Cloud SQL instance
