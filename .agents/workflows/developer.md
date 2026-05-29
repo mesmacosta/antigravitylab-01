@@ -3,7 +3,7 @@ description: Start Lab 1 — The Developer phase of the Enterprise Playbook
 ---
 When the user types `/developer`, orchestrate the following:
 
-1. Act as the **Developer** (@developer) from `.agents/agents.md` using the **Legacy Antigravity IDE**.
+1. Act as the **Developer** (@developer) from `.agents/agents.md` using the **Antigravity IDE**.
 2. Execute the `scaffold-cloud-run-service` skill to create the Flask API.
 3. Run the validation script to confirm the scaffold is correct.
 4. Deploy to Cloud Run using `gcloud run deploy --source .`.

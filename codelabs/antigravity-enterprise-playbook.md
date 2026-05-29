@@ -38,7 +38,7 @@ A serverless, event-driven **document processing pipeline** on Google Cloud that
 
 * The **Antigravity 2.0 Ecosystem** tools installed:
   * Antigravity 2.0 (The Command Center)
-  * Legacy Antigravity IDE
+  * Antigravity IDE
   * Antigravity CLI
   * Google Antigravity SDK (Python library)
 * A Google Cloud Project with billing enabled
@@ -60,7 +60,7 @@ Duration: 5:00
 ### Understand the Agentic Ecosystem Setup
 
 This workshop uses the interconnected Antigravity 2.0 Ecosystem:
-1. **The Tool Interfaces (Your Local Machine)**: You will interact with the agent through 4 distinct tools depending on the persona: the Legacy IDE, the 2.0 Command Center, the Python SDK, and the CLI.
+1. **The Tool Interfaces (Your Local Machine)**: You will interact with the agent through 4 distinct tools depending on the persona: the Antigravity IDE, the 2.0 Command Center, the Python SDK, and the CLI.
 2. **The Execution Environment (Google Cloud)**: Regardless of the tool interface, the Agent will execute `gcloud` commands locally on your machine to provision resources in your GCP project.
 
 ### Authenticate locally
@@ -106,7 +106,7 @@ cd antigravitylab-01
 
 ### Open the workspace
 
-1. Choose the appropriate Antigravity tool for the current lab (we'll start with the Legacy IDE).
+1. Choose the appropriate Antigravity tool for the current lab (we'll start with the Antigravity IDE).
 2. Open the `antigravitylab-01` folder as a workspace.
 3. Start a new conversation in this workspace.
 
@@ -157,7 +157,7 @@ Open `.agents/agents.md` to see the four personas:
 
 | Persona | Role | Ecosystem Tool | Lab |
 |---------|------|----------------|-----|
-| **@developer** | Scaffolds Flask microservices for Cloud Run | **Legacy IDE** | Lab 1 |
+| **@developer** | Scaffolds Flask microservices for Cloud Run | **Antigravity IDE** | Lab 1 |
 | **@architect** | Secures with Secret Manager + wires Eventarc | **Antigravity 2.0 Desktop** | Lab 2 |
 | **@dataengineer** | Provisions Cloud SQL + BigQuery pipelines | **Antigravity SDK** | Lab 3 |
 | **@sre** | Sets up CI/CD, WAF, and canary deploys | **Antigravity CLI** | Lab 4 |
@@ -189,7 +189,7 @@ Duration: 15:00
 
 ### Run the workflow
 
-Open the **Legacy Antigravity IDE** and type:
+Open the **Antigravity IDE** and type:
 
 ```
 /developer
@@ -522,7 +522,7 @@ Across four labs, you converged the skills of four personas:
 
 | Lab | Persona | Tool | What You Built |
 |-----|---------|------|----------------|
-| 1 | Developer | Legacy IDE | Flask API on Cloud Run with Buildpacks |
+| 1 | Developer | Antigravity IDE | Flask API on Cloud Run with Buildpacks |
 | 2 | Architect | Antigravity 2.0 | Secret Manager + Eventarc event pipeline |
 | 3 | Data Engineer | Python SDK | Cloud SQL pgvector + BigQuery streaming |
 | 4 | SRE | Antigravity CLI | Cloud Build CI/CD + Cloud Armor WAF (policy authored) + Canary deploys |
