@@ -36,11 +36,10 @@ A serverless, event-driven **document processing pipeline** on Google Cloud that
 
 ### What you'll need
 
-* The **Antigravity 2.0 Ecosystem** tools installed:
-  * Antigravity 2.0 (The Command Center)
-  * Antigravity IDE
-  * Antigravity CLI
-  * Google Antigravity SDK (Python library)
+* The **Antigravity 2.0 Ecosystem** tools:
+  * Antigravity 2.0 (The Command Center) installed locally
+  * Antigravity IDE installed locally
+  * *Note: The SDK and CLI will be used in Cloud Shell later.*
 * A Google Cloud Project with billing enabled
 * [gcloud CLI](https://cloud.google.com/sdk/docs/install) installed and authenticated
 * Basic familiarity with Python and the terminal
@@ -345,7 +344,15 @@ Duration: 20:00
 
 To demonstrate that Antigravity tools can run anywhere, we will transition to the cloud. **Open Google Cloud Shell** in your browser.
 
-First, install the Python SDK:
+First, clone the lab repository and set your Project ID inside the Cloud Shell session (since this is a fresh environment):
+
+```console
+git clone https://github.com/mesmacosta/antigravitylab-01.git
+cd antigravitylab-01
+export PROJECT_ID=$(gcloud config get-value project)
+```
+
+Next, install the Python SDK:
 
 ```console
 pip install google-antigravity-sdk

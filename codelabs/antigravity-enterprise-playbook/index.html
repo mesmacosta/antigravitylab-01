@@ -50,11 +50,10 @@
 </ul>
 <h2 is-upgraded>What you&#39;ll need</h2>
 <ul>
-<li>The <strong>Antigravity 2.0 Ecosystem</strong> tools installed: <ul>
-<li>Antigravity 2.0 (The Command Center)</li>
-<li>Antigravity IDE</li>
-<li>Antigravity CLI</li>
-<li>Google Antigravity SDK (Python library)</li>
+<li>The <strong>Antigravity 2.0 Ecosystem</strong> tools: <ul>
+<li>Antigravity 2.0 (The Command Center) installed locally</li>
+<li>Antigravity IDE installed locally</li>
+<li><em>Note: The SDK and CLI will be used in Cloud Shell later.</em></li>
 </ul>
 </li>
 <li>A Google Cloud Project with billing enabled</li>
@@ -314,7 +313,12 @@ gcloud storage cp test-doc.txt gs://${PROJECT_ID}-doc-intake/
 <p><strong>Skills activated</strong>: <code>provision-cloud-sql</code>, <code>stream-to-bigquery</code></p>
 <h2 is-upgraded>Run the workflow</h2>
 <p>To demonstrate that Antigravity tools can run anywhere, we will transition to the cloud. <strong>Open Google Cloud Shell</strong> in your browser.</p>
-<p>First, install the Python SDK:</p>
+<p>First, clone the lab repository and set your Project ID inside the Cloud Shell session (since this is a fresh environment):</p>
+<pre>git clone https://github.com/mesmacosta/antigravitylab-01.git
+cd antigravitylab-01
+export PROJECT_ID=$(gcloud config get-value project)
+</pre>
+<p>Next, install the Python SDK:</p>
 <pre>pip install google-antigravity-sdk
 </pre>
 <p>Next, trigger the workflow programmatically in Python. Create a file named <code>trigger.py</code> and run it:</p>
