@@ -255,7 +255,7 @@ You should see a healthy response.
 * ✅ No hardcoded secrets, no Dockerfile
 
 ## Lab 2: The Architect
-Duration: 15:00
+Duration: 10:00
 
 **Focus**: Designing the security perimeter and event-driven architecture.
 
@@ -335,7 +335,7 @@ gcloud logging read 'resource.type="cloud_run_revision" AND
 * ✅ Zero hardcoded credentials
 
 ## Lab 3: The Data Engineer
-Duration: 15:00
+Duration: 20:00
 
 **Focus**: Building the data layer for document embeddings and analytics.
 
@@ -409,7 +409,7 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 * ✅ Cloud Run service updated with streaming inserts
 
 ## Lab 4: The SRE
-Duration: 15:00
+Duration: 10:00
 
 **Focus**: CI/CD automation, security hardening, and safe deployments.
 
