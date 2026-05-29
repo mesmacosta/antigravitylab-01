@@ -104,6 +104,7 @@ echo &#34;Project ID: $PROJECT_ID&#34;
   compute.googleapis.com \
   storage.googleapis.com
 </pre>
+<p>Positive : This command enables 10 APIs and may take <strong>1-2 minutes</strong> to complete. Wait for it to finish before continuing.</p>
 <h2 is-upgraded>Clone the starter repo</h2>
 <p>The starter repo contains all the pre-authored Antigravity Skills, workflows, and validation scripts:</p>
 <pre>git clone https://github.com/mesmacosta/antigravitylab-01.git
@@ -233,6 +234,7 @@ cd antigravitylab-01
 </pre>
 <p>Positive : <code>gcloud run deploy --source .</code> uses <strong>Google Cloud Buildpacks</strong> to automatically containerize your Python app. No Dockerfile needed!</p>
 <p>Negative : <strong>Enterprise Warning</strong>: If you are running this in a corporate Google Cloud environment, the deployment might fail with an IAM error regarding <code>allUsers</code>. This is caused by a <strong>Domain Restricted Sharing</strong> Organization Policy. If this happens, ask the agent to &#34;Deploy again, but do not allow unauthenticated access.&#34;</p>
+<p>Positive : The first deployment in a project may prompt you to create an <strong>Artifact Registry</strong> repository. Type <code>Y</code> to confirm if prompted.</p>
 <h2 is-upgraded>Validate the scaffold</h2>
 <p>The agent runs the validation script automatically, but you can also run it manually:</p>
 <pre>python3 .agents/skills/scaffold-cloud-run-service/scripts/validate_scaffold.py
@@ -292,7 +294,7 @@ curl ${SERVICE_URL}/healthz
 <li>Create an Eventarc trigger routing <code>google.cloud.storage.object.v1.finalized</code> events to Cloud Run</li>
 </ol>
 <h2 is-upgraded>Verify</h2>
-<p>Run the verification scripts:</p>
+<p>Run the verification scripts in your <strong>system terminal</strong> (from the <code>antigravitylab-01</code> directory), or ask the agent to verify for you:</p>
 <pre>bash .agents/skills/inject-secrets/scripts/verify_secrets.sh
 bash .agents/skills/wire-pubsub-eventarc/scripts/verify_pubsub.sh
 </pre>
@@ -372,6 +374,7 @@ bq mk --table ${PROJECT_ID}:enterprise_analytics.processed_docs \
   filename:STRING,upload_date:TIMESTAMP,tags:STRING,word_count:INTEGER,processing_time_ms:INTEGER,status:STRING
 </pre>
 <h2 is-upgraded>Verify</h2>
+<p>Run the verification scripts in your <strong>Cloud Shell</strong> terminal:</p>
 <pre>bash .agents/skills/provision-cloud-sql/scripts/verify_cloudsql.sh
 bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 </pre>
@@ -393,10 +396,10 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 <p>First, install the Antigravity CLI:</p>
 <pre>pip install google-antigravity-cli
 </pre>
-<p>Then, trigger the workflow via the terminal (ensure you are in the lab directory):</p>
-<pre>cd antigravitylab-01
-antigravity run /sre
+<p>Then, trigger the workflow via the terminal (you should still be in the <code>antigravitylab-01</code> directory from Lab 3):</p>
+<pre>antigravity run /sre
 </pre>
+<p>Positive : If you opened a new Cloud Shell tab, re-run <code>cd antigravitylab-01</code> first.</p>
 <p>The agent will:</p>
 <ol type="1">
 <li>Adopt the <strong>@sre</strong> persona</li>
@@ -447,6 +450,7 @@ antigravity run /sre
   --to-tags canary=100
 </pre>
 <h2 is-upgraded>Verify</h2>
+<p>Run the verification script in your <strong>Cloud Shell</strong> terminal:</p>
 <pre>bash .agents/skills/apply-cloud-armor/scripts/verify_armor.sh
 </pre>
 <h2 is-upgraded>What you built</h2>
@@ -501,7 +505,7 @@ antigravity run /sre
 <p>In this lab, we used highly constrained &#34;Guardrail Skills&#34; to ensure a deterministic workshop experience. In the real world, you&#39;ll want to equip your agents with broad, generalized knowledge.</p>
 <p>Explore the official <a href="https://github.com/google/skills" target="_blank"><strong>Google Skills Repository</strong></a> to discover foundational skills like <code>cloud-run-basics</code> and <code>bigquery-basics</code> that empower your agents to architect and deploy resources dynamically.</p>
 <h2 is-upgraded>Clean up resources</h2>
-<p>To avoid ongoing charges, delete the resources created during this lab:</p>
+<p>To avoid ongoing charges, delete the resources created during this lab. Run the following in your <strong>Cloud Shell</strong> session or any terminal where <code>gcloud</code> is authenticated to your project:</p>
 <pre># Ensure Project ID is set
 export PROJECT_ID=$(gcloud config get-value project)
 

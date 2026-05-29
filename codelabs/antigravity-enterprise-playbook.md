@@ -101,6 +101,9 @@ gcloud services enable \
   storage.googleapis.com
 ```
 
+Positive
+: This command enables 10 APIs and may take **1-2 minutes** to complete. Wait for it to finish before continuing.
+
 ### Clone the starter repo
 
 The starter repo contains all the pre-authored Antigravity Skills, workflows, and validation scripts:
@@ -239,6 +242,9 @@ Positive
 Negative
 : **Enterprise Warning**: If you are running this in a corporate Google Cloud environment, the deployment might fail with an IAM error regarding `allUsers`. This is caused by a **Domain Restricted Sharing** Organization Policy. If this happens, ask the agent to "Deploy again, but do not allow unauthenticated access."
 
+Positive
+: The first deployment in a project may prompt you to create an **Artifact Registry** repository. Type `Y` to confirm if prompted.
+
 ### Validate the scaffold
 
 The agent runs the validation script automatically, but you can also run it manually:
@@ -320,7 +326,7 @@ The `wire-pubsub-eventarc` skill will:
 
 ### Verify
 
-Run the verification scripts:
+Run the verification scripts in your **system terminal** (from the `antigravitylab-01` directory), or ask the agent to verify for you:
 
 ```console
 bash .agents/skills/inject-secrets/scripts/verify_secrets.sh
@@ -433,6 +439,8 @@ bq mk --table ${PROJECT_ID}:enterprise_analytics.processed_docs \
 
 ### Verify
 
+Run the verification scripts in your **Cloud Shell** terminal:
+
 ```console
 bash .agents/skills/provision-cloud-sql/scripts/verify_cloudsql.sh
 bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
@@ -461,12 +469,14 @@ First, install the Antigravity CLI:
 pip install google-antigravity-cli
 ```
 
-Then, trigger the workflow via the terminal (ensure you are in the lab directory):
+Then, trigger the workflow via the terminal (you should still be in the `antigravitylab-01` directory from Lab 3):
 
 ```console
-cd antigravitylab-01
 antigravity run /sre
 ```
+
+Positive
+: If you opened a new Cloud Shell tab, re-run `cd antigravitylab-01` first.
 
 The agent will:
 
@@ -546,6 +556,8 @@ gcloud run services update-traffic enterprise-api \
 
 ### Verify
 
+Run the verification script in your **Cloud Shell** terminal:
+
 ```console
 bash .agents/skills/apply-cloud-armor/scripts/verify_armor.sh
 ```
@@ -587,7 +599,7 @@ Explore the official **[Google Skills Repository](https://github.com/google/skil
 
 ### Clean up resources
 
-To avoid ongoing charges, delete the resources created during this lab:
+To avoid ongoing charges, delete the resources created during this lab. Run the following in your **Cloud Shell** session or any terminal where `gcloud` is authenticated to your project:
 
 ```console
 # Ensure Project ID is set
