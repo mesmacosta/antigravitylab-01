@@ -37,8 +37,8 @@ A serverless, event-driven **document processing pipeline** on Google Cloud that
 ### What you'll need
 
 * The **Antigravity 2.0 Ecosystem** tools:
-  * Antigravity 2.0 (The Command Center) installed locally
-  * Antigravity IDE installed locally
+  * [Antigravity 2.0 (The Command Center)](https://antigravity.google/docs/command-center/install) installed locally
+  * [Antigravity IDE](https://antigravity.google/docs/ide/install) installed locally
   * *Note: The SDK and CLI will be used in Cloud Shell later.*
 * A Google Cloud Project with billing enabled
 * [gcloud CLI](https://cloud.google.com/sdk/docs/install) installed and authenticated
