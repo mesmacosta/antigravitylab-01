@@ -42,6 +42,7 @@ A serverless, event-driven **document processing pipeline** on Google Cloud that
   * *Note: The SDK and CLI will be used in Cloud Shell later.*
 * A Google Cloud Project with billing enabled
 * [gcloud CLI](https://cloud.google.com/sdk/docs/install) installed and authenticated
+* [Git](https://git-scm.com/downloads) installed
 * Basic familiarity with Python and the terminal
 
 Positive
@@ -73,10 +74,16 @@ gcloud auth application-default login
 
 ### Set your Project ID
 
+Set your active project to the one you created or selected above. Replace `YOUR_PROJECT_ID` with your actual project ID:
+
 ```console
+gcloud config set project YOUR_PROJECT_ID
 export PROJECT_ID=$(gcloud config get-value project)
 echo "Project ID: $PROJECT_ID"
 ```
+
+Positive
+: Verify the output shows your expected project ID before continuing. If it's blank or incorrect, re-run `gcloud config set project` with the correct value.
 
 ### Enable required APIs
 
@@ -114,7 +121,7 @@ Positive
 
 ### Explore the workspace structure
 
-Take a moment to explore the pre-authored files. In the Antigravity Editor or your terminal, run:
+Take a moment to explore the pre-authored files. In the Antigravity IDE terminal or your system terminal, run:
 
 ```console
 find .agents -type f | sort
@@ -250,7 +257,11 @@ SERVICE_URL=$(gcloud run services describe enterprise-api \
 curl ${SERVICE_URL}/healthz
 ```
 
-You should see a healthy response.
+You should see a JSON response like:
+
+```json
+{"status": "ok"}
+```
 
 ### What you built
 
@@ -348,7 +359,7 @@ Duration: 20:00
 
 ### Run the workflow
 
-To demonstrate that Antigravity tools can run anywhere, we will transition to the cloud. **Open Google Cloud Shell** in your browser.
+To demonstrate that Antigravity tools can run anywhere, we will transition to the cloud. Open **[Google Cloud Shell](https://shell.cloud.google.com/)** in your browser, or click the **Activate Cloud Shell** button (terminal icon) at the top-right of the [Google Cloud Console](https://console.cloud.google.com/).
 
 First, clone the lab repository and set your Project ID inside the Cloud Shell session (since this is a fresh environment):
 
@@ -364,13 +375,17 @@ Next, install the Python SDK:
 pip install google-antigravity-sdk
 ```
 
-Next, trigger the workflow programmatically in Python. Create a file named `trigger.py` and run it:
+Next, trigger the workflow programmatically in Python. Create the script and run it:
 
-```python
+```console
+cat > trigger.py << 'EOF'
 import antigravity
 
 agent = antigravity.Agent(workspace=".")
 agent.trigger_workflow("/dataengineer")
+EOF
+
+python3 trigger.py
 ```
 
 The agent will:
