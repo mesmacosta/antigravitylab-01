@@ -272,7 +272,7 @@ curl ${SERVICE_URL}/healthz
 <li>Adopt the <strong>@architect</strong> persona</li>
 <li>Create a secret in <strong>Secret Manager</strong> and bind it to Cloud Run</li>
 <li>Create a <strong>Pub/Sub topic</strong> and <strong>GCS bucket</strong></li>
-<li>Wire a <strong>Eventarc trigger</strong> for file upload events</li>
+<li>Wire an <strong>Eventarc trigger</strong> for file upload events</li>
 <li>Run verification scripts</li>
 </ol>
 <h2 is-upgraded>Part 1: Secret Manager</h2>
@@ -369,7 +369,7 @@ python3 trigger.py
 <p>Positive : To avoid interactive password prompts that can hang agent workflows, the agent will output the schema SQL and instruct you to run it visually using <strong>Cloud SQL Studio</strong> in the Google Cloud Console. <em>(Hint: When asked to log in to Cloud SQL Studio, use the username </em></p>
 <p><em><code>postgres</code></em></p>
 <p><em> and leave the password blank).</em></p>
-<p>Negative : <strong>Wait Time</strong>: The <code>gcloud sql instances create</code> command takes <strong>3-5 minutes</strong> to complete. This is normal — the agent will wait. In a live workshop, this is a good time for the presenter to explain the pgvector embedding architecture.</p>
+<p>Negative : <strong>Wait Time</strong>: The <code>gcloud sql instances create</code> command takes <strong>5-10 minutes</strong> to complete. This is normal — the agent will wait. In a live workshop, this is a good time for the presenter to explain the pgvector embedding architecture.</p>
 <h2 is-upgraded>Part 2: BigQuery Analytics</h2>
 <p>The <code>stream-to-bigquery</code> skill creates:</p>
 <pre>bq mk --dataset --location=us-central1 ${PROJECT_ID}:enterprise_analytics

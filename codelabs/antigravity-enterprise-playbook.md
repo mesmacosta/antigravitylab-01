@@ -297,7 +297,7 @@ The agent will:
 1. Adopt the **@architect** persona
 2. Create a secret in **Secret Manager** and bind it to Cloud Run
 3. Create a **Pub/Sub topic** and **GCS bucket**
-4. Wire a **Eventarc trigger** for file upload events
+4. Wire an **Eventarc trigger** for file upload events
 5. Run verification scripts
 
 ### Part 1: Secret Manager
@@ -430,7 +430,7 @@ Positive
 : To avoid interactive password prompts that can hang agent workflows, the agent will output the schema SQL and instruct you to run it visually using **Cloud SQL Studio** in the Google Cloud Console. *(Hint: When asked to log in to Cloud SQL Studio, use the username `postgres` and leave the password blank).*
 
 Negative
-: **Wait Time**: The `gcloud sql instances create` command takes **3-5 minutes** to complete. This is normal — the agent will wait. In a live workshop, this is a good time for the presenter to explain the pgvector embedding architecture.
+: **Wait Time**: The `gcloud sql instances create` command takes **5-10 minutes** to complete. This is normal — the agent will wait. In a live workshop, this is a good time for the presenter to explain the pgvector embedding architecture.
 
 ### Part 2: BigQuery Analytics
 
