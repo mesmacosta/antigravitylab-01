@@ -373,13 +373,16 @@ Duration: 20:00
 
 To demonstrate that Antigravity tools can run anywhere, we will transition to the cloud. Open **[Google Cloud Shell](https://shell.cloud.google.com/)** in your browser, or click the **Activate Cloud Shell** button (terminal icon) at the top-right of the [Google Cloud Console](https://console.cloud.google.com/).
 
-First, clone the lab repository and set your Project ID inside the Cloud Shell session (since this is a fresh environment):
+First, clone the lab repository, set your Project ID, and authenticate your Application Default Credentials inside the Cloud Shell session (since this is a fresh environment):
 
 ```console
 git clone https://github.com/mesmacosta/antigravitylab-01.git
 cd antigravitylab-01
 export PROJECT_ID=$(gcloud config get-value project)
+gcloud auth application-default login
 ```
+
+*(Note: If the `gcloud auth application-default login` command saves your credentials to a temporary `/tmp/` path, be sure to export that path via `export GOOGLE_APPLICATION_CREDENTIALS=/tmp/.../application_default_credentials.json` before proceeding. Make sure the `cloudresourcemanager.googleapis.com` API is enabled if prompted).*
 
 Next, install the Python SDK:
 
@@ -391,10 +394,30 @@ Next, trigger the workflow programmatically in Python. Create the script and run
 
 ```console
 cat > trigger.py << 'EOF'
-from google.antigravity import Agent
+import asyncio
+import os
+import logging
+from google.antigravity import Agent, LocalAgentConfig
 
-agent = Agent(workspace=".")
-agent.trigger_workflow("/dataengineer")
+logging.basicConfig(level=logging.INFO)
+
+async def main():
+    workspace_path = os.path.abspath(".")
+    
+    config = LocalAgentConfig(
+        workspaces=[workspace_path],
+        vertex=True,
+        project=os.environ.get("PROJECT_ID"),
+        location="global"
+    )
+    async with Agent(config) as agent:
+        print(f"\n\n🚀 Starting Data Engineer Workflow in {workspace_path}...")
+        response = await agent.chat("/dataengineer")
+        print("\n✅ Workflow Completed! Final Agent Response:")
+        print(await response.text())
+
+if __name__ == "__main__":
+    asyncio.run(main())
 EOF
 
 python3 trigger.py

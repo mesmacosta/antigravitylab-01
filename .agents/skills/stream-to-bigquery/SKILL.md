@@ -37,8 +37,8 @@ to stream document processing results for analysis.
      filename:STRING,upload_date:TIMESTAMP,tags:STRING,word_count:INTEGER,processing_time_ms:INTEGER,status:STRING
    ```
 4. **Update `app/main.py`** to add BigQuery streaming insert logic
-   using `google-cloud-bigquery` client library.
-5. **Add** `google-cloud-bigquery` to `app/requirements.txt`.
+   using `google-cloud-bigquery` client library. **CRITICAL**: If `app/main.py` does not exist, do NOT create it. Assume the Developer will implement it later.
+5. **Add** `google-cloud-bigquery` to `app/requirements.txt` (skip if the file does not exist).
 6. **Validate**: Run `bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh`
 
 ## Constraints
