@@ -402,8 +402,7 @@ import logging
 from google.antigravity import Agent, LocalAgentConfig
 from google.antigravity.hooks.policy import allow
 
-# Hide verbose debug logs unless needed
-logging.getLogger("google.antigravity").setLevel(logging.WARNING)
+# By default, google.antigravity INFO logs will show tool execution progress
 
 async def run_workflow(agent, prompt: str):
     """Executes a workflow and streams the response."""
