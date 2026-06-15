@@ -7,6 +7,7 @@ from google.antigravity import Agent, LocalAgentConfig
 from google.antigravity.hooks.policy import allow
 
 # By default, google.antigravity INFO logs will show tool execution progress
+logging.getLogger("google.antigravity").setLevel(logging.INFO)
 
 async def run_workflow(agent, prompt: str):
     """Executes a workflow and streams the response."""
