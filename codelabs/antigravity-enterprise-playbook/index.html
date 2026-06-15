@@ -333,13 +333,13 @@ cd antigravitylab-01
 export PROJECT_ID=$(gcloud config get-value project)
 </pre>
 <p>Next, install the Python SDK:</p>
-<pre>pip install google-antigravity-sdk
+<pre>pip install google-antigravity
 </pre>
 <p>Next, trigger the workflow programmatically in Python. Create the script and run it:</p>
 <pre>cat &gt; trigger.py &lt;&lt; &#39;EOF&#39;
-import antigravity
+from google.antigravity import Agent
 
-agent = antigravity.Agent(workspace=&#34;.&#34;)
+agent = Agent(workspace=&#34;.&#34;)
 agent.trigger_workflow(&#34;/dataengineer&#34;)
 EOF
 
