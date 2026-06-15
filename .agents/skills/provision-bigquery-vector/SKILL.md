@@ -37,14 +37,19 @@ Create the BigQuery vector search table for storing document embeddings, providi
      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
    );"
    ```
-3. **Create the Vector Index**:
+3. **Seed the table**:
+   BigQuery requires at least 5000 rows to create an IVF vector index. Run the seeding script to insert dummy data:
+   ```
+   python3 .agents/skills/provision-bigquery-vector/scripts/seed_bq.py
+   ```
+4. **Create the Vector Index**:
    ```
    bq query --use_legacy_sql=false "
    CREATE VECTOR INDEX IF NOT EXISTS my_index 
    ON \`${PROJECT_ID}.enterprise_analytics.document_embeddings\`(embedding) 
    OPTIONS(distance_type='COSINE', index_type='IVF');"
    ```
-4. **Validate**: Run `bash .agents/skills/provision-bigquery-vector/scripts/verify_bq_vector.sh`
+5. **Validate**: Run `bash .agents/skills/provision-bigquery-vector/scripts/verify_bq_vector.sh`
 
 ## Constraints
 - Ensure the `enterprise_analytics` dataset exists first (the `stream-to-bigquery` skill creates it).
