@@ -14,8 +14,8 @@ if not os.path.exists(main_path):
     errors.append("app/main.py not found.")
 else:
     content = open(main_path).read()
-    if "/healthz" not in content:
-        errors.append("app/main.py missing /healthz endpoint.")
+    if "/health" not in content:
+        errors.append("app/main.py missing /health endpoint.")
     if "os.environ" not in content and "os.getenv" not in content:
         warnings.append("app/main.py may have hardcoded config (no os.environ usage found).")
     # Check for hardcoded API keys

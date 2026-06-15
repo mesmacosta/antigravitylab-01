@@ -211,7 +211,7 @@ cd antigravitylab-01
 <ol type="1">
 <li>Adopt the <strong>@developer</strong> persona</li>
 <li>Scaffold a Flask application in <code>app/</code> with: <ul>
-<li><code>main.py</code> — Flask API with <code>/healthz</code> and <code>/process</code> endpoints</li>
+<li><code>main.py</code> — Flask API with <code>/health</code> and <code>/process</code> endpoints (including <code>/</code> for Eventarc events)</li>
 <li><code>requirements.txt</code> — Flask, gunicorn, google-cloud-logging</li>
 <li><code>Procfile</code> — Gunicorn configuration for Buildpacks</li>
 </ul>
@@ -244,7 +244,7 @@ cd antigravitylab-01
 <p>Once deployed, test the health endpoint:</p>
 <pre>SERVICE_URL=$(gcloud run services describe enterprise-api \
   --region us-central1 --format=&#39;value(status.url)&#39;)
-curl ${SERVICE_URL}/healthz
+curl ${SERVICE_URL}/health
 </pre>
 <p>You should see a JSON response like:</p>
 <pre><code language="language-json" class="language-json">{&#34;status&#34;: &#34;ok&#34;}
@@ -253,7 +253,7 @@ curl ${SERVICE_URL}/healthz
 <ul>
 <li>✅ A production-ready Flask microservice</li>
 <li>✅ Deployed to Cloud Run with Buildpacks</li>
-<li>✅ Health check endpoint at <code>/healthz</code></li>
+<li>✅ Health check endpoint at <code>/health</code></li>
 <li>✅ No hardcoded secrets, no Dockerfile</li>
 </ul>
 
@@ -300,6 +300,7 @@ curl ${SERVICE_URL}/healthz
 <p>Run the verification scripts in your <strong>system terminal</strong> (from the <code>antigravitylab-01</code> directory), or ask the agent to verify for you:</p>
 <pre>bash .agents/skills/inject-secrets/scripts/verify_secrets.sh
 bash .agents/skills/wire-pubsub-eventarc/scripts/verify_pubsub.sh
+bash .agents/skills/wire-pubsub-eventarc/scripts/verify_eventarc_e2e.sh
 </pre>
 <h2 is-upgraded>Test the event pipeline</h2>
 <p>Upload a test file to trigger the pipeline:</p>

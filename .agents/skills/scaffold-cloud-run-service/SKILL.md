@@ -24,8 +24,10 @@ using Google Cloud Buildpacks (no Dockerfile required).
 
 ## Instructions
 1. **Create the application** in `app/` with these files:
-   - `main.py` — Flask app with a `/healthz` endpoint and structured JSON logging
-     via `google-cloud-logging`. Include a `/process` POST endpoint stub.
+   - `main.py` — Flask app with a `/health` endpoint and structured JSON logging
+     via `google-cloud-logging` (use a `try/except` block to fallback to standard logging). Include a `/` and `/process` POST endpoint stub that extracts and logs Eventarc CloudEvent headers (`ce-id`, `ce-type`).
+     - **Important**: Do not use `/healthz` as it is reserved by the Google Frontend.
+     - **Important**: Add a global error handler that explicitly passes through `HTTPException` objects to avoid converting 404s to 500s.
    - `requirements.txt` — Flask, gunicorn, google-cloud-logging.
    - `Procfile` — `web: gunicorn --bind :$PORT main:app`
 2. **CRITICAL**: Do NOT create a Dockerfile. Cloud Run Buildpacks handle containerization.

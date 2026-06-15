@@ -29,8 +29,12 @@ asynchronous processing on the Cloud Run service via Eventarc.
    ```
 2. **Initialize the Eventarc service agent** (required on fresh projects):
    ```
-   gcloud eventarc providers describe google.cloud.storage \
-     --location=us-central1
+   gcloud beta services identity create --service=eventarc.googleapis.com --project=$PROJECT_ID
+   PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')
+   gcloud projects add-iam-policy-binding $PROJECT_ID \
+     --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-eventarc.iam.gserviceaccount.com" \
+     --role="roles/eventarc.serviceAgent"
+   sleep 30
    ```
 3. **Create the Pub/Sub topic**:
    ```
@@ -43,7 +47,7 @@ asynchronous processing on the Cloud Run service via Eventarc.
    ```
 5. **Grant GCS Service Agent the Pub/Sub Publisher role**:
    ```
-   STORAGE_SA="$(gcloud storage service-agent --project=$PROJECT_ID)"
+   STORAGE_SA=$(gcloud storage service-agent --project=$PROJECT_ID | tr -d '[:space:]')
    gcloud projects add-iam-policy-binding $PROJECT_ID \
      --member="serviceAccount:${STORAGE_SA}" \
      --role="roles/pubsub.publisher"
@@ -59,7 +63,8 @@ asynchronous processing on the Cloud Run service via Eventarc.
      --event-filters="bucket=${PROJECT_ID}-doc-intake" \
      --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
    ```
-7. **Validate**: Run `bash .agents/skills/wire-pubsub-eventarc/scripts/verify_pubsub.sh`
+7. **Validate infrastructure**: Run `bash .agents/skills/wire-pubsub-eventarc/scripts/verify_pubsub.sh`
+8. **Validate end-to-end**: Run `bash .agents/skills/wire-pubsub-eventarc/scripts/verify_eventarc_e2e.sh`
 
 ## Constraints
 - Use Eventarc triggers, NOT direct Pub/Sub push subscriptions.

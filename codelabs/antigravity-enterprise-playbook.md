@@ -212,7 +212,7 @@ The agent will:
 
 1. Adopt the **@developer** persona
 2. Scaffold a Flask application in `app/` with:
-   * `main.py` — Flask API with `/healthz` and `/process` endpoints
+   * `main.py` — Flask API with `/health` and `/process` endpoints (including `/` for Eventarc events)
    * `requirements.txt` — Flask, gunicorn, google-cloud-logging
    * `Procfile` — Gunicorn configuration for Buildpacks
 3. Run the validation script
@@ -261,7 +261,7 @@ Once deployed, test the health endpoint:
 ```console
 SERVICE_URL=$(gcloud run services describe enterprise-api \
   --region us-central1 --format='value(status.url)')
-curl ${SERVICE_URL}/healthz
+curl ${SERVICE_URL}/health
 ```
 
 You should see a JSON response like:
@@ -274,7 +274,7 @@ You should see a JSON response like:
 
 * ✅ A production-ready Flask microservice
 * ✅ Deployed to Cloud Run with Buildpacks
-* ✅ Health check endpoint at `/healthz`
+* ✅ Health check endpoint at `/health`
 * ✅ No hardcoded secrets, no Dockerfile
 
 ## Lab 2: The Architect
@@ -336,6 +336,7 @@ Run the verification scripts in your **system terminal** (from the `antigravityl
 ```console
 bash .agents/skills/inject-secrets/scripts/verify_secrets.sh
 bash .agents/skills/wire-pubsub-eventarc/scripts/verify_pubsub.sh
+bash .agents/skills/wire-pubsub-eventarc/scripts/verify_eventarc_e2e.sh
 ```
 
 ### Test the event pipeline
