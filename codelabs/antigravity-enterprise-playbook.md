@@ -22,7 +22,7 @@ A serverless, event-driven **document processing pipeline** on Google Cloud that
 
 * Ingests files via Cloud Storage
 * Processes them through a Cloud Run microservice
-* Stores embeddings in Cloud SQL with pgvector
+* Stores embeddings natively in BigQuery with BigQuery Vector Search
 * Streams metadata into BigQuery for analytics
 * Is protected by Cloud Armor WAF
 * Deploys safely via canary releases
@@ -140,8 +140,8 @@ You should see:
 .agents/skills/canary-deploy/SKILL.md
 .agents/skills/inject-secrets/SKILL.md
 .agents/skills/inject-secrets/scripts/verify_secrets.sh
-.agents/skills/provision-cloud-sql/SKILL.md
-.agents/skills/provision-cloud-sql/scripts/verify_cloudsql.sh
+.agents/skills/provision-bigquery-vector/SKILL.md
+.agents/skills/provision-bigquery-vector/scripts/verify_bq_vector.sh
 .agents/skills/scaffold-cloud-run-service/SKILL.md
 .agents/skills/scaffold-cloud-run-service/scripts/validate_scaffold.py
 .agents/skills/setup-cloud-build/SKILL.md
@@ -172,7 +172,7 @@ Open `.agents/agents.md` to see the four personas:
 |---------|------|----------------|-----|
 | **@developer** | Scaffolds Flask microservices for Cloud Run | **Antigravity IDE** | Lab 1 |
 | **@architect** | Secures with Secret Manager + wires Eventarc | **Antigravity 2.0 Desktop** | Lab 2 |
-| **@dataengineer** | Provisions Cloud SQL + BigQuery pipelines | **Antigravity SDK** | Lab 3 |
+| **@dataengineer** | Provisions BigQuery pipelines & Vector Search | **Antigravity SDK** | Lab 3 |
 | **@sre** | Sets up CI/CD, WAF, and canary deploys | **Antigravity CLI** | Lab 4 |
 
 ### Skills as Guardrails
@@ -367,7 +367,7 @@ Duration: 20:00
 
 **Focus**: Building the data layer for document embeddings and analytics.
 
-**Skills activated**: `provision-cloud-sql`, `stream-to-bigquery`
+**Skills activated**: `provision-bigquery-vector`, `stream-to-bigquery`
 
 ### Run the workflow
 
@@ -393,13 +393,53 @@ pip install google-antigravity
 Next, trigger the workflow programmatically in Python. Create the script and run it:
 
 ```console
-cat > trigger.py << 'EOF'
+cat > harness.py << 'EOF'
 import asyncio
 import os
+import subprocess
+import sys
 import logging
 from google.antigravity import Agent, LocalAgentConfig
+from google.antigravity.hooks.policy import allow
 
-logging.basicConfig(level=logging.INFO)
+# Hide verbose debug logs unless needed
+logging.getLogger("google.antigravity").setLevel(logging.WARNING)
+
+async def run_workflow(agent, prompt: str):
+    """Executes a workflow and streams the response."""
+    response = await agent.chat(prompt)
+    async for chunk in response:
+        # Print each token/chunk to stdout as it arrives
+        print(chunk, end="", flush=True)
+    print("\n")
+    return response
+
+def verify_scripts():
+    """Runs local verification scripts and returns True if successful."""
+    print("\n🔍 Running Post-Execution Verification...")
+    
+    # Run BigQuery Vector verification
+    vector_result = subprocess.run(
+        ["bash", ".agents/skills/provision-bigquery-vector/scripts/verify_bq_vector.sh"],
+        capture_output=True, text=True
+    )
+    print(vector_result.stdout)
+    if vector_result.returncode != 0:
+        print(f"❌ BigQuery Vector verification failed:\n{vector_result.stderr}", file=sys.stderr)
+        return False, vector_result.stderr
+
+    # Run BigQuery verification
+    bq_result = subprocess.run(
+        ["bash", ".agents/skills/stream-to-bigquery/scripts/verify_bq.sh"],
+        capture_output=True, text=True
+    )
+    print(bq_result.stdout)
+    if bq_result.returncode != 0:
+        print(f"❌ BigQuery verification failed:\n{bq_result.stderr}", file=sys.stderr)
+        return False, bq_result.stderr
+
+    print("✅ All automated verifications passed successfully!")
+    return True, ""
 
 async def main():
     workspace_path = os.path.abspath(".")
@@ -408,53 +448,73 @@ async def main():
         workspaces=[workspace_path],
         vertex=True,
         project=os.environ.get("PROJECT_ID"),
-        location="global"
+        location="global",
+        policies=[allow("run_command")]
     )
+    
     async with Agent(config) as agent:
-        print(f"\n\n🚀 Starting Data Engineer Workflow in {workspace_path}...")
-        response = await agent.chat("/dataengineer")
-        print("\n✅ Workflow Completed! Final Agent Response:")
-        print(await response.text())
-
+        print(f"\n🚀 Starting Data Engineer Workflow in {workspace_path}...\n")
+        
+        # Iteration 1
+        await run_workflow(agent, "/dataengineer")
+        
+        success, error_msg = verify_scripts()
+        
+        # Self-healing loop (max 1 retry)
+        if not success:
+            print("\n⚠️ Verification failed! Engaging self-healing loop for 1 retry...\n")
+            retry_prompt = (
+                f"The verification failed with the following error:\n{error_msg}\n"
+                "Please analyze the failure and run the necessary commands to fix it."
+            )
+            await run_workflow(agent, retry_prompt)
+            
+            # Verify again
+            success, _ = verify_scripts()
+            if not success:
+                print("\n❌ Workflow failed after retry. Please inspect manually.")
+                sys.exit(1)
+                
 if __name__ == "__main__":
     asyncio.run(main())
 EOF
 
-python3 trigger.py
+python3 harness.py
 ```
 
 The agent will:
 
 1. Adopt the **@dataengineer** persona
-2. Provision a **Cloud SQL PostgreSQL 16** instance with pgvector
+2. Provision a **BigQuery Vector Search** index for storing embeddings
 3. Create the document embeddings schema
 4. Set up a **BigQuery** dataset and table for analytics
 5. Update the Cloud Run service to stream data to BigQuery
 
 Negative
-: **Cost Notice**: The Cloud SQL `db-f1-micro` instance costs ~$0.01/hr. Remember to delete it after the lab (see Clean Up step).
+: **Speed Notice**: Unlike traditional database provisioning which takes 5-10 minutes, BigQuery datasets and tables provision essentially instantly, allowing the agent to complete this workflow in under 10 seconds.
 
-### Part 1: Cloud SQL with pgvector
+### Part 1: BigQuery Vector Search
 
-The `provision-cloud-sql` skill creates:
+The `provision-bigquery-vector` skill creates:
 
-* A PostgreSQL 16 instance with `cloudsql.enable_pgvector=on`
-* A `playbook_db` database
-* A `documents` table with a `vector(768)` column for embeddings
+* An `enterprise_analytics` dataset
+* A `document_embeddings` table with an `ARRAY<FLOAT64>` column for embeddings
+* A `my_index` Vector Index
 
-```console
-gcloud sql instances create enterprise-db \
-  --database-version=POSTGRES_16 \
-  --tier=db-f1-micro \
-  --region=us-central1 \
-  --database-flags=cloudsql.enable_pgvector=on
+```sql
+   CREATE TABLE IF NOT EXISTS `your-project-id.enterprise_analytics.document_embeddings` (
+     id STRING,
+     filename STRING,
+     content STRING,
+     embedding ARRAY<FLOAT64>,
+     metadata JSON,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
+   );
+
+   CREATE VECTOR INDEX IF NOT EXISTS my_index 
+   ON `your-project-id.enterprise_analytics.document_embeddings`(embedding) 
+   OPTIONS(distance_type='COSINE', index_type='IVF');
 ```
-
-Positive
-: To avoid interactive password prompts that can hang agent workflows, the agent will output the schema SQL and instruct you to run it visually using **Cloud SQL Studio** in the Google Cloud Console. *(Hint: When asked to log in to Cloud SQL Studio, use the username `postgres` and leave the password blank).*
-
-Negative
-: **Wait Time**: The `gcloud sql instances create` command takes **5-10 minutes** to complete. This is normal — the agent will wait. In a live workshop, this is a good time for the presenter to explain the pgvector embedding architecture.
 
 ### Part 2: BigQuery Analytics
 
@@ -471,13 +531,13 @@ bq mk --table ${PROJECT_ID}:enterprise_analytics.processed_docs \
 Run the verification scripts in your **Cloud Shell** terminal:
 
 ```console
-bash .agents/skills/provision-cloud-sql/scripts/verify_cloudsql.sh
+bash .agents/skills/provision-bigquery-vector/scripts/verify_bq_vector.sh
 bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 ```
 
 ### What you built
 
-* ✅ Cloud SQL PostgreSQL 16 with pgvector for RAG embeddings
+* ✅ BigQuery Vector Search table for RAG embeddings
 * ✅ BigQuery analytics pipeline for processed documents
 * ✅ Cloud Run service updated with streaming inserts
 
@@ -613,7 +673,7 @@ Across four labs, you converged the skills of four personas:
 |-----|---------|------|----------------|
 | 1 | Developer | Antigravity IDE | Flask API on Cloud Run with Buildpacks |
 | 2 | Architect | Antigravity 2.0 | Secret Manager + Eventarc event pipeline |
-| 3 | Data Engineer | Python SDK | Cloud SQL pgvector + BigQuery streaming |
+| 3 | Data Engineer | Python SDK | BigQuery Vector Search + BigQuery streaming |
 | 4 | SRE | Antigravity CLI | Cloud Build CI/CD + Cloud Armor WAF (policy authored) + Canary deploys |
 
 ### Key takeaways
@@ -640,8 +700,8 @@ export PROJECT_ID=$(gcloud config get-value project)
 # Delete Cloud Run service
 gcloud run services delete enterprise-api --region us-central1 --quiet
 
-# Delete Cloud SQL instance
-gcloud sql instances delete enterprise-db --quiet
+# Delete BigQuery dataset and tables
+bq rm -r -f -d ${PROJECT_ID}:enterprise_analytics
 
 # Delete GCS bucket
 gcloud storage rm -r gs://${PROJECT_ID}-doc-intake/ --quiet
@@ -679,7 +739,7 @@ gcloud artifacts repositories delete cloud-run-source-deploy \
 * [Cloud Run Documentation](https://cloud.google.com/run/docs)
 * [Secret Manager Documentation](https://cloud.google.com/secret-manager/docs)
 * [Eventarc Documentation](https://cloud.google.com/eventarc/docs)
-* [Cloud SQL Documentation](https://cloud.google.com/sql/docs)
+* [BigQuery Vector Search](https://cloud.google.com/bigquery/docs/vector-search)
 * [BigQuery Documentation](https://cloud.google.com/bigquery/docs)
 * [Cloud Build Documentation](https://cloud.google.com/build/docs)
 * [Cloud Armor Documentation](https://cloud.google.com/armor/docs)
