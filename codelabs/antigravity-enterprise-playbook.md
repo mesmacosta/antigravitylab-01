@@ -559,10 +559,20 @@ curl -fsSL https://antigravity.google/cli/install.sh | bash
 ```
 
 Positive
-: **CLI Authentication Bootstrapping**: Because the CLI uses an interactive TUI, running it with a command immediately can cause formatting issues in Cloud Shell. To bootstrap it cleanly, first just type `agy` and press Enter. Select **2. Use a Google Cloud project** when prompted. Once you see the chat interface, press `Ctrl+C` to exit. Then run the headless execution command below.
+: **CLI Interactive Mode**: To avoid formatting issues in Cloud Shell, we will run the CLI in interactive mode rather than passing the workflow as a command-line argument.
+
+First, start the CLI interactively:
 
 ```console
-agy run /sre
+agy
+```
+
+When prompted to "Select login method", use your arrow keys to select **2. Use a Google Cloud project** and press Enter.
+
+Once you are authenticated and see the Antigravity chat interface, type the slash command to trigger the workflow:
+
+```
+/sre
 ```
 
 Positive
