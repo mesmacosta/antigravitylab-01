@@ -23,11 +23,7 @@ to Cloud Run using Buildpacks (no Dockerfile).
 - A Cloud Build pipeline already exists for this service
 
 ## Instructions
-1. **Enable the API**:
-   ```
-   gcloud services enable cloudbuild.googleapis.com
-   ```
-2. **Grant IAM permissions to the Cloud Build Service Account**:
+1. **Grant IAM permissions to the Cloud Build Service Account**:
    ```
    PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')
    gcloud projects add-iam-policy-binding $PROJECT_ID \
@@ -37,14 +33,14 @@ to Cloud Run using Buildpacks (no Dockerfile).
      --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
      --role="roles/iam.serviceAccountUser"
    ```
-3. **Read the golden template** at `references/cloudbuild.yaml.tmpl`.
-4. **Generate** `infra/cloudbuild.yaml` based on the template, customized
+2. **Read the golden template** at `references/cloudbuild.yaml.tmpl`.
+3. **Generate** `infra/cloudbuild.yaml` based on the template, customized
    with the user's project region and service name.
-5. **Submit a manual build** to validate the pipeline works:
+4. **Submit a manual build** to validate the pipeline works:
    ```
    gcloud builds submit --config=infra/cloudbuild.yaml app/
    ```
-6. **Check the build result**:
+5. **Check the build result**:
    ```
    gcloud builds list --limit=1 --format='table(id,status,createTime)'
    ```

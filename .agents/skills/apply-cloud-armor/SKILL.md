@@ -23,16 +23,12 @@ that blocks common OWASP attacks and rate-limits requests.
 - A Cloud Armor policy named `enterprise-waf` already exists
 
 ## Instructions
-1. **Enable the API**:
-   ```
-   gcloud services enable compute.googleapis.com
-   ```
-2. **Create the security policy**:
+1. **Create the security policy**:
    ```
    gcloud compute security-policies create enterprise-waf \
      --description="Enterprise WAF policy for Cloud Run services"
    ```
-3. **Add XSS protection rule**:
+2. **Add XSS protection rule**:
    ```
    gcloud compute security-policies rules create 1000 \
      --security-policy=enterprise-waf \
@@ -40,7 +36,7 @@ that blocks common OWASP attacks and rate-limits requests.
      --action=deny-403 \
      --description="Block XSS attacks"
    ```
-4. **Add SQL injection protection rule**:
+3. **Add SQL injection protection rule**:
    ```
    gcloud compute security-policies rules create 1001 \
      --security-policy=enterprise-waf \
@@ -48,7 +44,7 @@ that blocks common OWASP attacks and rate-limits requests.
      --action=deny-403 \
      --description="Block SQL injection"
    ```
-5. **Add rate-limiting rule**:
+4. **Add rate-limiting rule**:
    ```
    gcloud compute security-policies rules create 2000 \
      --security-policy=enterprise-waf \
@@ -61,7 +57,7 @@ that blocks common OWASP attacks and rate-limits requests.
      --enforce-on-key=IP \
      --description="Rate limit: 100 req/min per IP"
    ```
-6. **Validate**: Run `bash .agents/skills/apply-cloud-armor/scripts/verify_armor.sh`
+5. **Validate**: Run `bash .agents/skills/apply-cloud-armor/scripts/verify_armor.sh`
 
 ## Constraints
 - Use pre-configured OWASP rules, do NOT write custom CEL expressions.

@@ -402,8 +402,8 @@ import logging
 from google.antigravity import Agent, LocalAgentConfig
 from google.antigravity.hooks.policy import allow
 
-# By default, google.antigravity INFO logs will show tool execution progress
-logging.getLogger("google.antigravity").setLevel(logging.INFO)
+# Set to DEBUG to see the actual tool call payloads (like the bash commands being executed)
+logging.getLogger("google.antigravity").setLevel(logging.DEBUG)
 
 async def run_workflow(agent, prompt: str):
     """Executes a workflow and streams the response."""
@@ -555,13 +555,14 @@ Continue using your open **Google Cloud Shell** session.
 First, install the Antigravity CLI:
 
 ```console
-pip install google-antigravity-cli
+curl -fsSL https://antigravity.google/cli/install.sh | bash
 ```
 
-Then, trigger the workflow via the terminal (you should still be in the `antigravitylab-01` directory from Lab 3):
+Positive
+: **CLI Authentication Bootstrapping**: Because the CLI uses an interactive TUI, running it with a command immediately can cause formatting issues in Cloud Shell. To bootstrap it cleanly, first just type `agy` and press Enter. Select **2. Use a Google Cloud project** when prompted. Once you see the chat interface, press `Ctrl+C` to exit. Then run the headless execution command below.
 
 ```console
-antigravity run /sre
+agy run /sre
 ```
 
 Positive

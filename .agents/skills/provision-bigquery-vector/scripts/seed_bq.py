@@ -1,6 +1,7 @@
 import os
 import json
 import random
+import subprocess
 
 def seed_data():
     project = os.environ.get("PROJECT_ID")
@@ -19,8 +20,13 @@ def seed_data():
             }
             f.write(json.dumps(row) + "\n")
 
+    print(f"Truncating any existing dirty data in {table_id}...")
+    subprocess.run([
+        "bq", "query", "--use_legacy_sql=false", 
+        f"TRUNCATE TABLE `{table_id}`"
+    ], capture_output=True)
+
     print(f"Loading data into {table_id}...")
-    import subprocess
     result = subprocess.run([
         "bq", "load", "--source_format=NEWLINE_DELIMITED_JSON",
         table_id, filename
