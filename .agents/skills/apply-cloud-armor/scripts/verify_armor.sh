@@ -11,9 +11,8 @@ else
 fi
 
 echo "🔍 Checking WAF rules..."
-RULES=$(gcloud compute security-policies rules list \
-  --security-policy=enterprise-waf \
-  --format='value(priority)' 2>/dev/null)
+RULES=$(gcloud compute security-policies describe enterprise-waf \
+  --format='value(rules.priority)' 2>/dev/null)
 
 for RULE in 1000 1001 2000; do
   if echo "$RULES" | grep -q "$RULE"; then
