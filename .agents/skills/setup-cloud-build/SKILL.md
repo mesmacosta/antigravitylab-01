@@ -36,17 +36,12 @@ to Cloud Run using Buildpacks (no Dockerfile).
 2. **Read the golden template** at `references/cloudbuild.yaml.tmpl`.
 3. **Generate** `infra/cloudbuild.yaml` based on the template, customized
    with the user's project region and service name.
-4. **Submit a manual build** to validate the pipeline works:
+4. **Verify the generated file exists**:
    ```
-   gcloud builds submit --config=infra/cloudbuild.yaml app/
+   cat infra/cloudbuild.yaml
    ```
-5. **Check the build result**:
-   ```
-   gcloud builds list --limit=1 --format='table(id,status,createTime)'
-   ```
-   Expected status: `SUCCESS`
 
 ## Constraints
 - Use the template in `references/`, do NOT generate cloudbuild.yaml from scratch.
 - The build MUST use Buildpacks (`gcloud run deploy --source`), no Dockerfile step.
-- `gcloud builds submit` is available in Cloud Shell.
+- Do NOT run `gcloud builds submit`. Only generate the YAML file and verify it.

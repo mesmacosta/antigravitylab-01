@@ -542,7 +542,7 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 * ✅ Cloud Run service updated with streaming inserts
 
 ## Lab 4: The SRE
-Duration: 10:00
+Duration: 5:00
 
 **Focus**: CI/CD automation, security hardening, and safe deployments.
 
@@ -559,10 +559,20 @@ curl -fsSL https://antigravity.google/cli/install.sh | bash
 ```
 
 Positive
-: **CLI Authentication Bootstrapping**: Because the CLI uses an interactive TUI, running it with a command immediately can cause formatting issues in Cloud Shell. To bootstrap it cleanly, first just type `agy` and press Enter. Select **2. Use a Google Cloud project** when prompted. Once you see the chat interface, press `Ctrl+C` to exit. Then run the headless execution command below.
+: **CLI Interactive Mode**: To avoid formatting issues in Cloud Shell, we will run the CLI in interactive mode rather than passing the workflow as a command-line argument.
+
+First, start the CLI interactively:
 
 ```console
-agy run /sre
+agy
+```
+
+When prompted to "Select login method", use your arrow keys to select **2. Use a Google Cloud project** and press Enter.
+
+Once you are authenticated and see the Antigravity chat interface, type the slash command to trigger the workflow:
+
+```
+/sre
 ```
 
 Positive
@@ -571,26 +581,19 @@ Positive
 The agent will:
 
 1. Adopt the **@sre** persona
-2. Set up a **Cloud Build** CI/CD pipeline
+2. Generate a **Cloud Build** CI/CD pipeline configuration
 3. Create a **Cloud Armor** WAF policy with OWASP rules
 4. Perform a **canary deployment** with traffic splitting
 
 ### Part 1: Cloud Build CI/CD
 
-The `setup-cloud-build` skill reads the golden template from `references/cloudbuild.yaml.tmpl` and submits a build:
+The `setup-cloud-build` skill reads the golden template from `references/cloudbuild.yaml.tmpl` and generates `infra/cloudbuild.yaml`:
 
 Positive
 : Behind the scenes, the agent grants the **Cloud Build Service Account** the `roles/run.admin` and `roles/iam.serviceAccountUser` roles. This is required so Cloud Build can deploy new revisions to Cloud Run on your behalf.
 
-```console
-gcloud builds submit --config=infra/cloudbuild.yaml app/
-```
-
-Verify the build succeeded:
-
-```console
-gcloud builds list --limit=1 --format='table(id,status,createTime)'
-```
+Positive
+: **Speed Optimization**: The agent generates the Cloud Build YAML configuration but does **not** submit a build. In production, this pipeline would be triggered by a `git push` or a manual `gcloud builds submit`. Skipping the actual build saves ~5 minutes during the workshop.
 
 ### Part 2: Cloud Armor WAF
 
@@ -610,11 +613,15 @@ Negative
 
 ### Part 3: Canary Deployment
 
-The `canary-deploy` skill deploys a new revision without traffic, then gradually shifts:
+The `canary-deploy` skill reuses the **existing container image** (no rebuild!) and deploys a new revision without traffic, then gradually shifts:
 
 ```console
+IMAGE=$(gcloud run services describe enterprise-api \
+  --region us-central1 \
+  --format='value(spec.template.spec.containers[0].image)')
+
 gcloud run deploy enterprise-api \
-  --source app/ \
+  --image $IMAGE \
   --region us-central1 \
   --no-traffic \
   --tag canary
@@ -657,7 +664,7 @@ bash .agents/skills/apply-cloud-armor/scripts/verify_armor.sh
 
 ### What you built
 
-* ✅ Automated CI/CD with Cloud Build
+* ✅ Automated CI/CD configuration with Cloud Build
 * ✅ Authored Cloud Armor WAF rules (XSS, SQLi, rate limiting)
 * ✅ Safe canary deployments with traffic splitting
 
@@ -675,7 +682,7 @@ Across four labs, you converged the skills of four personas:
 | 1 | Developer | Antigravity IDE | Flask API on Cloud Run with Buildpacks |
 | 2 | Architect | Antigravity 2.0 | Secret Manager + Eventarc event pipeline |
 | 3 | Data Engineer | Python SDK | BigQuery Vector Search + BigQuery streaming |
-| 4 | SRE | Antigravity CLI | Cloud Build CI/CD + Cloud Armor WAF (policy authored) + Canary deploys |
+| 4 | SRE | Antigravity CLI | Cloud Build config + Cloud Armor WAF + Canary deploys |
 
 ### Key takeaways
 
