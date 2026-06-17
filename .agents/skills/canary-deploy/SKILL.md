@@ -23,33 +23,39 @@ before full promotion.
 - No existing revision is serving traffic yet (first deploy)
 
 ## Instructions
-1. **Deploy a new revision** with a tag (no traffic yet):
+1. **Get the current image** from the running service (to avoid a slow rebuild):
+   ```
+   IMAGE=$(gcloud run services describe enterprise-api \
+     --region us-central1 \
+     --format='value(spec.template.spec.containers[0].image)')
+   ```
+2. **Deploy a new revision** using the existing image, with a tag (no traffic yet):
    ```
    gcloud run deploy enterprise-api \
-     --source app/ \
+     --image $IMAGE \
      --region us-central1 \
      --no-traffic \
      --tag canary
    ```
-2. **Split traffic** — send 10% to canary:
+3. **Split traffic** — send 10% to canary:
    ```
    gcloud run services update-traffic enterprise-api \
      --region us-central1 \
      --to-tags canary=10
    ```
-3. **Monitor** using Cloud Logging (available in Cloud Shell):
+4. **Monitor** using Cloud Logging (available in Cloud Shell):
    ```
    gcloud logging read 'resource.type="cloud_run_revision" AND
      resource.labels.service_name="enterprise-api" AND severity>=ERROR' \
      --limit=10 --format='table(timestamp,textPayload)'
    ```
-4. **If healthy**, promote to 100%:
+5. **If healthy**, promote to 100%:
    ```
    gcloud run services update-traffic enterprise-api \
      --region us-central1 \
      --to-tags canary=100
    ```
-5. **If errors detected**, rollback:
+6. **If errors detected**, rollback:
    ```
    gcloud run services update-traffic enterprise-api \
      --region us-central1 \
@@ -57,11 +63,12 @@ before full promotion.
    ```
 
 ## Approval Gate
-- HALT after step 2 (10% traffic split). Show the user the monitoring command
+- HALT after step 3 (10% traffic split). Show the user the monitoring command
   output and ask: "The canary is receiving 10% of traffic. Do you want to
   promote to 100% or rollback?"
 
 ## Constraints
 - NEVER go directly to 100% traffic on a new revision.
 - ALWAYS start at 10% and wait for user approval.
+- Do NOT use `--source app/` to deploy. Always reuse the existing image via `--image`.
 - All commands use `gcloud run` which is available in Cloud Shell.
