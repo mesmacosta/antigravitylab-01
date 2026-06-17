@@ -561,7 +561,15 @@ curl -fsSL https://antigravity.google/cli/install.sh | bash
 Positive
 : **CLI Interactive Mode**: To avoid formatting issues in Cloud Shell, we will run the CLI in interactive mode rather than passing the workflow as a command-line argument.
 
-First, start the CLI interactively:
+First, print the SRE workflow prompt to your terminal so you can copy it to your clipboard:
+
+```console
+cat .agents/workflows/sre.md
+```
+
+Select the output text and copy it. We will use this to configure the agent.
+
+Now, start the CLI interactively:
 
 ```console
 agy
@@ -569,14 +577,25 @@ agy
 
 When prompted to "Select login method", use your arrow keys to select **2. Use a Google Cloud project** and press Enter.
 
-Once you are authenticated and see the Antigravity chat interface, type the slash command to trigger the workflow:
+Once you are authenticated and see the Antigravity chat interface, first use the `/agents` command to explicitly create a workspace agent based on the SRE persona:
+
+```
+/agents
+```
+
+Follow the interactive prompts:
+1. Select **Workspace** to save the agent to your local repository.
+2. Name the agent `sre`
+3. When asked for the agent's system prompt or description, paste the SRE workflow text you copied earlier!
+
+Positive
+: If you opened a new Cloud Shell tab, re-run `cd antigravitylab-01` first.
+
+Once your SRE agent is created, trigger the workflow by typing:
 
 ```
 /sre
 ```
-
-Positive
-: If you opened a new Cloud Shell tab, re-run `cd antigravitylab-01` first.
 
 The agent will:
 
