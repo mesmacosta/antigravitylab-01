@@ -592,11 +592,10 @@ cat > .agents/plugins/sre/agents/sre/agent.json << 'EOF'
 EOF
 ```
 
-Now, leverage the Antigravity CLI's package manager to install your custom local plugin and enable it:
+Now, leverage the Antigravity CLI's package manager to install your custom local plugin:
 
 ```console
 agy plugin install .agents/plugins/sre
-agy plugin enable sre
 ```
 
 Positive
