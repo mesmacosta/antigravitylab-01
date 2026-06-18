@@ -561,11 +561,29 @@ curl -fsSL https://antigravity.google/cli/install.sh | bash
 Positive
 : **CLI Interactive Mode**: To avoid formatting issues in Cloud Shell, we will run the CLI in interactive mode rather than passing the workflow as a command-line argument.
 
-First, scaffold the SRE agent definition locally in your workspace. We will create the agent's folder and use the `cat` command to write the agent definition file:
+Instead of using raw markdown prompts or standalone agents, we will implement this phase "The Enterprise Way" by creating an internal **SRE Plugin**. Plugins encapsulate agents and skills into a globally reusable and versionable bundle.
+
+First, create the plugin structure in your workspace:
 
 ```console
-mkdir -p .agents/agents/sre
-cat > .agents/agents/sre/agent.json << 'EOF'
+mkdir -p .agents/plugins/sre/agents/sre
+```
+
+Define the plugin metadata descriptor (`plugin.json`):
+
+```console
+cat > .agents/plugins/sre/plugin.json << 'EOF'
+{
+  "name": "sre",
+  "description": "Enterprise SRE Workflow Automation Plugin"
+}
+EOF
+```
+
+Next, define the SRE agent directly inside the plugin's `agents/` directory:
+
+```console
+cat > .agents/plugins/sre/agents/sre/agent.json << 'EOF'
 {
   "name": "sre",
   "description": "Start Lab 4 — The SRE phase of the Enterprise Playbook",
@@ -574,17 +592,20 @@ cat > .agents/agents/sre/agent.json << 'EOF'
 EOF
 ```
 
-Negative
-: **CLI UI Bug**: In current versions of the Antigravity CLI, manually created workspace agents do not show up visually in the `/agents` menu list. However, they are loaded in the background. To explicitly register the agent so the CLI knows about it, append its path to your `agents.md` registry:
+Now, leverage the Antigravity CLI's package manager to install your custom local plugin and enable it:
 
 ```console
-echo "**Agent Config**: .agents/agents/sre/agent.json" >> .agents/agents.md
+agy plugin install .agents/plugins/sre
+agy plugin enable sre
 ```
+
+Positive
+: **Plugin Installed**: Notice that `agy plugin install` automatically scanned your plugin directory and registered the SRE agent natively! You can now use this plugin in any repository.
 
 Positive
 : **CLI Interactive Mode**: To avoid formatting issues in Cloud Shell, we will run the CLI in interactive mode rather than passing the workflow as a command-line argument.
 
-Now, start the CLI interactively:
+Start the CLI interactively:
 
 ```console
 agy
@@ -592,7 +613,7 @@ agy
 
 When prompted to "Select login method", use your arrow keys to select **2. Use a Google Cloud project** and press Enter.
 
-Once you are authenticated and see the Antigravity chat interface, your newly scaffolded SRE agent is already loaded (even if you don't see it in the `/agents` list). Trigger the workflow by typing:
+Once you are authenticated and see the Antigravity chat interface, your SRE plugin agent is active! Trigger the workflow by typing:
 
 ```
 /sre
