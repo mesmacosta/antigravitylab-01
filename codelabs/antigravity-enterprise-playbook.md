@@ -574,6 +574,13 @@ cat > .agents/agents/sre/agent.json << 'EOF'
 EOF
 ```
 
+Negative
+: **CLI UI Bug**: In current versions of the Antigravity CLI, manually created workspace agents do not show up visually in the `/agents` menu list. However, they are loaded in the background. To explicitly register the agent so the CLI knows about it, append its path to your `agents.md` registry:
+
+```console
+echo "**Agent Config**: .agents/agents/sre/agent.json" >> .agents/agents.md
+```
+
 Positive
 : **CLI Interactive Mode**: To avoid formatting issues in Cloud Shell, we will run the CLI in interactive mode rather than passing the workflow as a command-line argument.
 
@@ -585,7 +592,7 @@ agy
 
 When prompted to "Select login method", use your arrow keys to select **2. Use a Google Cloud project** and press Enter.
 
-Once you are authenticated and see the Antigravity chat interface, your newly scaffolded SRE agent is already loaded! Trigger the workflow by typing:
+Once you are authenticated and see the Antigravity chat interface, your newly scaffolded SRE agent is already loaded (even if you don't see it in the `/agents` list). Trigger the workflow by typing:
 
 ```
 /sre
