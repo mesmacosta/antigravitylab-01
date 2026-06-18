@@ -578,7 +578,8 @@ The agent will:
 1. Adopt the **@sre** persona
 2. Generate a **Cloud Build** CI/CD pipeline configuration
 3. Create a **Cloud Armor** WAF policy with OWASP rules
-4. Perform a **canary deployment** with traffic splitting
+4. Deploy a **Global External Load Balancer** with a Serverless NEG to enforce the WAF
+5. Perform a **canary deployment** with traffic splitting
 
 
 ### Part 1: Cloud Build CI/CD
@@ -721,6 +722,13 @@ gcloud secrets delete gemini-api-key --quiet
 
 # Delete BigQuery dataset
 bq rm -r -f ${PROJECT_ID}:enterprise_analytics
+
+# Delete Global Load Balancer resources
+gcloud compute forwarding-rules delete enterprise-api-forwarding-rule --global --quiet
+gcloud compute target-http-proxies delete enterprise-api-http-proxy --quiet
+gcloud compute url-maps delete enterprise-api-url-map --quiet
+gcloud compute backend-services delete enterprise-api-backend --global --quiet
+gcloud compute network-endpoint-groups delete enterprise-api-neg --region us-central1 --quiet
 
 # Delete Cloud Armor policy
 gcloud compute security-policies delete enterprise-waf --quiet

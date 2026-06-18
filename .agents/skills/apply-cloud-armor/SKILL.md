@@ -57,9 +57,56 @@ that blocks common OWASP attacks and rate-limits requests.
      --enforce-on-key=IP \
      --description="Rate limit: 100 req/min per IP"
    ```
-5. **Validate**: Run `bash .agents/skills/apply-cloud-armor/scripts/verify_armor.sh`
+5. **Create Serverless NEG**:
+   ```
+   gcloud compute network-endpoint-groups create enterprise-api-neg \
+     --region=us-central1 \
+     --network-endpoint-type=serverless \
+     --cloud-run-service=enterprise-api
+   ```
+6. **Create Global Backend Service**:
+   ```
+   gcloud compute backend-services create enterprise-api-backend \
+     --load-balancing-scheme=EXTERNAL \
+     --global
+   ```
+7. **Add NEG to Backend Service**:
+   ```
+   gcloud compute backend-services add-backend enterprise-api-backend \
+     --global \
+     --network-endpoint-group=enterprise-api-neg \
+     --network-endpoint-group-region=us-central1
+   ```
+8. **Attach Cloud Armor Policy**:
+   ```
+   gcloud compute backend-services update enterprise-api-backend \
+     --security-policy enterprise-waf \
+     --global
+   ```
+9. **Create URL Map, Proxy, and Forwarding Rule**:
+   ```
+   gcloud compute url-maps create enterprise-api-url-map \
+     --default-service enterprise-api-backend
+     
+   gcloud compute target-http-proxies create enterprise-api-http-proxy \
+     --url-map enterprise-api-url-map
+     
+   gcloud compute forwarding-rules create enterprise-api-forwarding-rule \
+     --load-balancing-scheme=EXTERNAL \
+     --network-tier=PREMIUM \
+     --global \
+     --target-http-proxy=enterprise-api-http-proxy \
+     --ports=80
+   ```
+10. **Restrict Cloud Run Ingress**:
+    ```
+    gcloud run services update enterprise-api \
+      --region us-central1 \
+      --ingress internal-and-cloud-load-balancing
+    ```
+11. **Validate**: Run `bash .agents/skills/apply-cloud-armor/scripts/verify_armor.sh`
 
 ## Constraints
 - Use pre-configured OWASP rules, do NOT write custom CEL expressions.
 - Rate limit MUST be 100 requests per minute per IP.
-- All commands use `gcloud compute` which is available in Cloud Shell.
+- All commands use `gcloud compute` and `gcloud run` which are available in Cloud Shell.
