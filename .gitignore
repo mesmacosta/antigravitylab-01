@@ -2,6 +2,7 @@
 app/
 infra/
 test-doc.txt
+.antigravitycli/
 
 # Python
 __pycache__/
