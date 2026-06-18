@@ -561,13 +561,21 @@ curl -fsSL https://antigravity.google/cli/install.sh | bash
 Positive
 : **CLI Interactive Mode**: To avoid formatting issues in Cloud Shell, we will run the CLI in interactive mode rather than passing the workflow as a command-line argument.
 
-First, print the SRE workflow prompt to your terminal so you can copy it to your clipboard:
+First, scaffold the SRE agent definition locally in your workspace. We will create the agent's folder and use the `cat` command to write the agent definition file:
 
 ```console
-cat .agents/workflows/sre.md
+mkdir -p .agents/agents/sre
+cat > .agents/agents/sre/agent.json << 'EOF'
+{
+  "name": "sre",
+  "description": "Start Lab 4 — The SRE phase of the Enterprise Playbook",
+  "system_prompt": "When the user types `/sre`, orchestrate the following:\n\n1. Act as the **SRE** (@sre) from `.agents/agents.md` via the **Antigravity CLI**.\n2. Execute the `setup-cloud-build` skill to create the CI/CD pipeline YAML (do NOT submit a build).\n3. Execute the `apply-cloud-armor` skill to set up WAF protection.\n4. Execute the `canary-deploy` skill for safe traffic splitting (do NOT rebuild from source — reuse the existing image).\n5. HALT and present the final enterprise architecture summary to the user.\n\n**IMPORTANT: Do NOT run `gcloud builds submit` or `gcloud run deploy --source`. These rebuild the container from scratch and take 5+ minutes. The Cloud Build skill should only generate the YAML. The canary deploy skill should reuse the existing container image via `--image`.**"
+}
+EOF
 ```
 
-Select the output text and copy it. We will use this to configure the agent.
+Positive
+: **CLI Interactive Mode**: To avoid formatting issues in Cloud Shell, we will run the CLI in interactive mode rather than passing the workflow as a command-line argument.
 
 Now, start the CLI interactively:
 
@@ -577,25 +585,14 @@ agy
 
 When prompted to "Select login method", use your arrow keys to select **2. Use a Google Cloud project** and press Enter.
 
-Once you are authenticated and see the Antigravity chat interface, first use the `/agents` command to explicitly create a workspace agent based on the SRE persona:
-
-```
-/agents
-```
-
-Follow the interactive prompts:
-1. Select **Workspace** to save the agent to your local repository.
-2. Name the agent `sre`
-3. When asked for the agent's system prompt or description, paste the SRE workflow text you copied earlier!
-
-Positive
-: If you opened a new Cloud Shell tab, re-run `cd antigravitylab-01` first.
-
-Once your SRE agent is created, trigger the workflow by typing:
+Once you are authenticated and see the Antigravity chat interface, your newly scaffolded SRE agent is already loaded! Trigger the workflow by typing:
 
 ```
 /sre
 ```
+
+Positive
+: If you opened a new Cloud Shell tab, re-run `cd antigravitylab-01` first.
 
 The agent will:
 
