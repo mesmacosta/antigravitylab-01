@@ -559,37 +559,16 @@ curl -fsSL https://antigravity.google/cli/install.sh | bash
 ```
 
 Positive
-: **CLI Interactive Mode**: To avoid formatting issues in Cloud Shell, we will run the CLI in interactive mode rather than passing the workflow as a command-line argument.
+: **CLI Authentication Bootstrapping**: Because the CLI uses an interactive TUI, running it with a command immediately can cause formatting issues in Cloud Shell. To bootstrap it cleanly, first just type `agy` and press Enter. Select **2. Use a Google Cloud project** when prompted. Once you see the chat interface, press **Ctrl+C** to exit.
 
-First, scaffold the SRE agent definition locally in your workspace. We will create the agent's folder and use the `cat` command to write the agent definition file:
+Now run the SRE workflow with the `-i` flag, which sends the initial prompt and keeps the session interactive:
 
 ```console
-mkdir -p .agents/agents/sre
-cat > .agents/agents/sre/agent.json << 'EOF'
-{
-  "name": "sre",
-  "description": "Start Lab 4 — The SRE phase of the Enterprise Playbook",
-  "system_prompt": "When the user types `/sre`, orchestrate the following:\n\n1. Act as the **SRE** (@sre) from `.agents/agents.md` via the **Antigravity CLI**.\n2. Execute the `setup-cloud-build` skill to create the CI/CD pipeline YAML (do NOT submit a build).\n3. Execute the `apply-cloud-armor` skill to set up WAF protection.\n4. Execute the `canary-deploy` skill for safe traffic splitting (do NOT rebuild from source — reuse the existing image).\n5. HALT and present the final enterprise architecture summary to the user.\n\n**IMPORTANT: Do NOT run `gcloud builds submit` or `gcloud run deploy --source`. These rebuild the container from scratch and take 5+ minutes. The Cloud Build skill should only generate the YAML. The canary deploy skill should reuse the existing container image via `--image`.**"
-}
-EOF
+agy -i "run /sre"
 ```
 
 Positive
-: **CLI Interactive Mode**: To avoid formatting issues in Cloud Shell, we will run the CLI in interactive mode rather than passing the workflow as a command-line argument.
-
-Now, start the CLI interactively:
-
-```console
-agy
-```
-
-When prompted to "Select login method", use your arrow keys to select **2. Use a Google Cloud project** and press Enter.
-
-Once you are authenticated and see the Antigravity chat interface, your newly scaffolded SRE agent is already loaded! Trigger the workflow by typing:
-
-```
-/sre
-```
+: The `-i` flag sends `run /sre` as the first message to the agent. The agent matches this to the pre-authored workflow at `.agents/workflows/sre.md` and begins executing the SRE runbook immediately.
 
 Positive
 : If you opened a new Cloud Shell tab, re-run `cd antigravitylab-01` first.
@@ -600,6 +579,7 @@ The agent will:
 2. Generate a **Cloud Build** CI/CD pipeline configuration
 3. Create a **Cloud Armor** WAF policy with OWASP rules
 4. Perform a **canary deployment** with traffic splitting
+
 
 ### Part 1: Cloud Build CI/CD
 
