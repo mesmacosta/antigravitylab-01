@@ -542,7 +542,7 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 * ✅ Cloud Run service updated with streaming inserts
 
 ## Lab 4: The SRE
-Duration: 5:00
+Duration: 15:00
 
 **Focus**: CI/CD automation, security hardening, and safe deployments.
 
@@ -606,7 +606,7 @@ gcloud compute security-policies create enterprise-waf \
 ```
 
 Negative
-: **Architecture Note**: Cloud Armor cannot be attached directly to a Cloud Run service. It requires a Global External Application Load Balancer. Setting up a Load Balancer takes ~15 minutes and requires domain/SSL setup, which is outside the scope of this lab. The agent *authors* the WAF policy, but it remains unattached for now.
+: **Architecture Note**: Cloud Armor cannot be attached directly to a Cloud Run service. The agent provisions a **Global External Application Load Balancer** with a Serverless NEG and strictly locks down the Cloud Run ingress. **Please note: Google Cloud Load Balancers can take 5-10 minutes to fully propagate their IP addresses globally.** The agent's commands will succeed immediately, but the endpoint may return 404/502 errors until propagation completes.
 
 ### Part 3: Canary Deployment
 
