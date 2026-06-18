@@ -36,7 +36,7 @@
 <ul>
 <li>Ingests files via Cloud Storage</li>
 <li>Processes them through a Cloud Run microservice</li>
-<li>Stores embeddings in Cloud SQL with pgvector</li>
+<li>Stores embeddings natively in BigQuery with BigQuery Vector Search</li>
 <li>Streams metadata into BigQuery for analytics</li>
 <li>Is protected by Cloud Armor WAF</li>
 <li>Deploys safely via canary releases</li>
@@ -129,8 +129,8 @@ cd antigravitylab-01
 .agents/skills/canary-deploy/SKILL.md
 .agents/skills/inject-secrets/SKILL.md
 .agents/skills/inject-secrets/scripts/verify_secrets.sh
-.agents/skills/provision-cloud-sql/SKILL.md
-.agents/skills/provision-cloud-sql/scripts/verify_cloudsql.sh
+.agents/skills/provision-bigquery-vector/SKILL.md
+.agents/skills/provision-bigquery-vector/scripts/verify_bq_vector.sh
 .agents/skills/scaffold-cloud-run-service/SKILL.md
 .agents/skills/scaffold-cloud-run-service/scripts/validate_scaffold.py
 .agents/skills/setup-cloud-build/SKILL.md
@@ -170,7 +170,7 @@ cd antigravitylab-01
 </td><td colspan="1" rowspan="1"><p>Lab 2</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p><strong>@dataengineer</strong></p>
-</td><td colspan="1" rowspan="1"><p>Provisions Cloud SQL + BigQuery pipelines</p>
+</td><td colspan="1" rowspan="1"><p>Provisions BigQuery pipelines &amp; Vector Search</p>
 </td><td colspan="1" rowspan="1"><p><strong>Antigravity SDK</strong></p>
 </td><td colspan="1" rowspan="1"><p>Lab 3</p>
 </td></tr>
@@ -324,53 +324,145 @@ gcloud storage cp test-doc.txt gs://${PROJECT_ID}-doc-intake/
     
       <google-codelab-step label="Lab 3: The Data Engineer" duration="20">
         <p><strong>Focus</strong>: Building the data layer for document embeddings and analytics.</p>
-<p><strong>Skills activated</strong>: <code>provision-cloud-sql</code>, <code>stream-to-bigquery</code></p>
+<p><strong>Skills activated</strong>: <code>provision-bigquery-vector</code>, <code>stream-to-bigquery</code></p>
 <h2 is-upgraded>Run the workflow</h2>
 <p>To demonstrate that Antigravity tools can run anywhere, we will transition to the cloud. Open <a href="https://shell.cloud.google.com/" target="_blank"><strong>Google Cloud Shell</strong></a> in your browser, or click the <strong>Activate Cloud Shell</strong> button (terminal icon) at the top-right of the <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a>.</p>
-<p>First, clone the lab repository and set your Project ID inside the Cloud Shell session (since this is a fresh environment):</p>
+<p>First, clone the lab repository, set your Project ID, and authenticate your Application Default Credentials inside the Cloud Shell session (since this is a fresh environment):</p>
 <pre>git clone https://github.com/mesmacosta/antigravitylab-01.git
 cd antigravitylab-01
 export PROJECT_ID=$(gcloud config get-value project)
+gcloud auth application-default login
 </pre>
+<p><em>(Note: If the </em></p>
+<p><em><code>gcloud auth application-default login</code></em></p>
+<p><em> command saves your credentials to a temporary </em></p>
+<p><em><code>/tmp/</code></em></p>
+<p><em> path, be sure to export that path via </em></p>
+<p><em><code>export GOOGLE_APPLICATION_CREDENTIALS=/tmp/.../application_default_credentials.json</code></em></p>
+<p><em> before proceeding. Make sure the </em></p>
+<p><em><code>cloudresourcemanager.googleapis.com</code></em></p>
+<p><em> API is enabled if prompted).</em></p>
 <p>Next, install the Python SDK:</p>
 <pre>pip install google-antigravity
 </pre>
 <p>Next, trigger the workflow programmatically in Python. Create the script and run it:</p>
-<pre>cat &gt; trigger.py &lt;&lt; &#39;EOF&#39;
-from google.antigravity import Agent
+<pre>cat &gt; harness.py &lt;&lt; &#39;EOF&#39;
+import asyncio
+import os
+import subprocess
+import sys
+import logging
+from google.antigravity import Agent, LocalAgentConfig
+from google.antigravity.hooks.policy import allow
 
-agent = Agent(workspace=&#34;.&#34;)
-agent.trigger_workflow(&#34;/dataengineer&#34;)
+# Set to DEBUG to see the actual tool call payloads (like the bash commands being executed)
+logging.getLogger(&#34;google.antigravity&#34;).setLevel(logging.DEBUG)
+
+async def run_workflow(agent, prompt: str):
+    &#34;&#34;&#34;Executes a workflow and streams the response.&#34;&#34;&#34;
+    response = await agent.chat(prompt)
+    async for chunk in response:
+        # Print each token/chunk to stdout as it arrives
+        print(chunk, end=&#34;&#34;, flush=True)
+    print(&#34;\n&#34;)
+    return response
+
+def verify_scripts():
+    &#34;&#34;&#34;Runs local verification scripts and returns True if successful.&#34;&#34;&#34;
+    print(&#34;\n🔍 Running Post-Execution Verification...&#34;)
+    
+    # Run BigQuery Vector verification
+    vector_result = subprocess.run(
+        [&#34;bash&#34;, &#34;.agents/skills/provision-bigquery-vector/scripts/verify_bq_vector.sh&#34;],
+        capture_output=True, text=True
+    )
+    print(vector_result.stdout)
+    if vector_result.returncode != 0:
+        print(f&#34;❌ BigQuery Vector verification failed:\n{vector_result.stderr}&#34;, file=sys.stderr)
+        return False, vector_result.stderr
+
+    # Run BigQuery verification
+    bq_result = subprocess.run(
+        [&#34;bash&#34;, &#34;.agents/skills/stream-to-bigquery/scripts/verify_bq.sh&#34;],
+        capture_output=True, text=True
+    )
+    print(bq_result.stdout)
+    if bq_result.returncode != 0:
+        print(f&#34;❌ BigQuery verification failed:\n{bq_result.stderr}&#34;, file=sys.stderr)
+        return False, bq_result.stderr
+
+    print(&#34;✅ All automated verifications passed successfully!&#34;)
+    return True, &#34;&#34;
+
+async def main():
+    workspace_path = os.path.abspath(&#34;.&#34;)
+    
+    config = LocalAgentConfig(
+        workspaces=[workspace_path],
+        vertex=True,
+        project=os.environ.get(&#34;PROJECT_ID&#34;),
+        location=&#34;global&#34;,
+        policies=[allow(&#34;run_command&#34;)]
+    )
+    
+    async with Agent(config) as agent:
+        print(f&#34;\n🚀 Starting Data Engineer Workflow in {workspace_path}...\n&#34;)
+        
+        # Iteration 1
+        await run_workflow(agent, &#34;/dataengineer&#34;)
+        
+        success, error_msg = verify_scripts()
+        
+        # Self-healing loop (max 1 retry)
+        if not success:
+            print(&#34;\n⚠️ Verification failed! Engaging self-healing loop for 1 retry...\n&#34;)
+            retry_prompt = (
+                f&#34;The verification failed with the following error:\n{error_msg}\n&#34;
+                &#34;Please analyze the failure and run the necessary commands to fix it.&#34;
+            )
+            await run_workflow(agent, retry_prompt)
+            
+            # Verify again
+            success, _ = verify_scripts()
+            if not success:
+                print(&#34;\n❌ Workflow failed after retry. Please inspect manually.&#34;)
+                sys.exit(1)
+                
+if __name__ == &#34;__main__&#34;:
+    asyncio.run(main())
 EOF
 
-python3 trigger.py
+python3 harness.py
 </pre>
 <p>The agent will:</p>
 <ol type="1">
 <li>Adopt the <strong>@dataengineer</strong> persona</li>
-<li>Provision a <strong>Cloud SQL PostgreSQL 16</strong> instance with pgvector</li>
+<li>Provision a <strong>BigQuery Vector Search</strong> index for storing embeddings</li>
 <li>Create the document embeddings schema</li>
 <li>Set up a <strong>BigQuery</strong> dataset and table for analytics</li>
 <li>Update the Cloud Run service to stream data to BigQuery</li>
 </ol>
-<p>Negative : <strong>Cost Notice</strong>: The Cloud SQL <code>db-f1-micro</code> instance costs ~$0.01/hr. Remember to delete it after the lab (see Clean Up step).</p>
-<h2 is-upgraded>Part 1: Cloud SQL with pgvector</h2>
-<p>The <code>provision-cloud-sql</code> skill creates:</p>
+<p>Negative : <strong>Speed Notice</strong>: Unlike traditional database provisioning which takes 5-10 minutes, BigQuery datasets and tables provision essentially instantly, allowing the agent to complete this workflow in under 10 seconds.</p>
+<h2 is-upgraded>Part 1: BigQuery Vector Search</h2>
+<p>The <code>provision-bigquery-vector</code> skill creates:</p>
 <ul>
-<li>A PostgreSQL 16 instance with <code>cloudsql.enable_pgvector=on</code></li>
-<li>A <code>playbook_db</code> database</li>
-<li>A <code>documents</code> table with a <code>vector(768)</code> column for embeddings</li>
+<li>An <code>enterprise_analytics</code> dataset</li>
+<li>A <code>document_embeddings</code> table with an <code>ARRAY<FLOAT64></code> column for embeddings</li>
+<li>A <code>my_index</code> Vector Index</li>
 </ul>
-<pre>gcloud sql instances create enterprise-db \
-  --database-version=POSTGRES_16 \
-  --tier=db-f1-micro \
-  --region=us-central1 \
-  --database-flags=cloudsql.enable_pgvector=on
-</pre>
-<p>Positive : To avoid interactive password prompts that can hang agent workflows, the agent will output the schema SQL and instruct you to run it visually using <strong>Cloud SQL Studio</strong> in the Google Cloud Console. <em>(Hint: When asked to log in to Cloud SQL Studio, use the username </em></p>
-<p><em><code>postgres</code></em></p>
-<p><em> and leave the password blank).</em></p>
-<p>Negative : <strong>Wait Time</strong>: The <code>gcloud sql instances create</code> command takes <strong>5-10 minutes</strong> to complete. This is normal — the agent will wait. In a live workshop, this is a good time for the presenter to explain the pgvector embedding architecture.</p>
+<pre><code language="language-sql" class="language-sql">   CREATE TABLE IF NOT EXISTS `your-project-id.enterprise_analytics.document_embeddings` (
+     id STRING,
+     filename STRING,
+     content STRING,
+     embedding ARRAY&lt;FLOAT64&gt;,
+     metadata JSON,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
+   );
+
+   CREATE VECTOR INDEX IF NOT EXISTS my_index 
+   ON `your-project-id.enterprise_analytics.document_embeddings`(embedding) 
+   OPTIONS(distance_type=&#39;COSINE&#39;, index_type=&#39;IVF&#39;);
+</code></pre>
 <h2 is-upgraded>Part 2: BigQuery Analytics</h2>
 <p>The <code>stream-to-bigquery</code> skill creates:</p>
 <pre>bq mk --dataset --location=us-central1 ${PROJECT_ID}:enterprise_analytics
@@ -379,12 +471,12 @@ bq mk --table ${PROJECT_ID}:enterprise_analytics.processed_docs \
 </pre>
 <h2 is-upgraded>Verify</h2>
 <p>Run the verification scripts in your <strong>Cloud Shell</strong> terminal:</p>
-<pre>bash .agents/skills/provision-cloud-sql/scripts/verify_cloudsql.sh
+<pre>bash .agents/skills/provision-bigquery-vector/scripts/verify_bq_vector.sh
 bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 </pre>
 <h2 is-upgraded>What you built</h2>
 <ul>
-<li>✅ Cloud SQL PostgreSQL 16 with pgvector for RAG embeddings</li>
+<li>✅ BigQuery Vector Search table for RAG embeddings</li>
 <li>✅ BigQuery analytics pipeline for processed documents</li>
 <li>✅ Cloud Run service updated with streaming inserts</li>
 </ul>
@@ -392,33 +484,32 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 
       </google-codelab-step>
     
-      <google-codelab-step label="Lab 4: The SRE" duration="10">
+      <google-codelab-step label="Lab 4: The SRE" duration="15">
         <p><strong>Focus</strong>: CI/CD automation, security hardening, and safe deployments.</p>
 <p><strong>Skills activated</strong>: <code>setup-cloud-build</code>, <code>apply-cloud-armor</code>, <code>canary-deploy</code></p>
 <h2 is-upgraded>Run the workflow</h2>
 <p>Continue using your open <strong>Google Cloud Shell</strong> session.</p>
 <p>First, install the Antigravity CLI:</p>
-<pre>pip install google-antigravity-cli
+<pre>curl -fsSL https://antigravity.google/cli/install.sh | bash
 </pre>
-<p>Then, trigger the workflow via the terminal (you should still be in the <code>antigravitylab-01</code> directory from Lab 3):</p>
-<pre>antigravity run /sre
+<p>Positive : <strong>CLI Authentication Bootstrapping</strong>: Because the CLI uses an interactive TUI, running it with a command immediately can cause formatting issues in Cloud Shell. To bootstrap it cleanly, first just type <code>agy</code> and press Enter. Select <strong>2. Use a Google Cloud project</strong> when prompted. Once you see the chat interface, press <strong>Ctrl+C</strong> to exit.</p>
+<p>Now run the SRE workflow with the <code>-i</code> flag, which sends the initial prompt and keeps the session interactive:</p>
+<pre>agy -i &#34;run /sre&#34;
 </pre>
+<p>Positive : The <code>-i</code> flag sends <code>run /sre</code> as the first message to the agent. The agent matches this to the pre-authored workflow at <code>.agents/workflows/sre.md</code> and begins executing the SRE runbook immediately.</p>
 <p>Positive : If you opened a new Cloud Shell tab, re-run <code>cd antigravitylab-01</code> first.</p>
 <p>The agent will:</p>
 <ol type="1">
 <li>Adopt the <strong>@sre</strong> persona</li>
-<li>Set up a <strong>Cloud Build</strong> CI/CD pipeline</li>
+<li>Generate a <strong>Cloud Build</strong> CI/CD pipeline configuration</li>
 <li>Create a <strong>Cloud Armor</strong> WAF policy with OWASP rules</li>
+<li>Deploy a <strong>Global External Load Balancer</strong> with a Serverless NEG to enforce the WAF</li>
 <li>Perform a <strong>canary deployment</strong> with traffic splitting</li>
 </ol>
 <h2 is-upgraded>Part 1: Cloud Build CI/CD</h2>
-<p>The <code>setup-cloud-build</code> skill reads the golden template from <code>references/cloudbuild.yaml.tmpl</code> and submits a build:</p>
+<p>The <code>setup-cloud-build</code> skill reads the golden template from <code>references/cloudbuild.yaml.tmpl</code> and generates <code>infra/cloudbuild.yaml</code>:</p>
 <p>Positive : Behind the scenes, the agent grants the <strong>Cloud Build Service Account</strong> the <code>roles/run.admin</code> and <code>roles/iam.serviceAccountUser</code> roles. This is required so Cloud Build can deploy new revisions to Cloud Run on your behalf.</p>
-<pre>gcloud builds submit --config=infra/cloudbuild.yaml app/
-</pre>
-<p>Verify the build succeeded:</p>
-<pre>gcloud builds list --limit=1 --format=&#39;table(id,status,createTime)&#39;
-</pre>
+<p>Positive : <strong>Speed Optimization</strong>: The agent generates the Cloud Build YAML configuration but does <strong>not</strong> submit a build. In production, this pipeline would be triggered by a <code>git push</code> or a manual <code>gcloud builds submit</code>. Skipping the actual build saves ~5 minutes during the workshop.</p>
 <h2 is-upgraded>Part 2: Cloud Armor WAF</h2>
 <p>The <code>apply-cloud-armor</code> skill creates a security policy with:</p>
 <ul>
@@ -429,11 +520,15 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 <pre>gcloud compute security-policies create enterprise-waf \
   --description=&#34;Enterprise WAF policy for Cloud Run services&#34;
 </pre>
-<p>Negative : <strong>Architecture Note</strong>: Cloud Armor cannot be attached directly to a Cloud Run service. It requires a Global External Application Load Balancer. Setting up a Load Balancer takes ~15 minutes and requires domain/SSL setup, which is outside the scope of this lab. The agent <em>authors</em> the WAF policy, but it remains unattached for now.</p>
+<p>Negative : <strong>Architecture Note</strong>: Cloud Armor cannot be attached directly to a Cloud Run service. The agent provisions a <strong>Global External Application Load Balancer</strong> with a Serverless NEG and strictly locks down the Cloud Run ingress. <strong>Please note: Google Cloud Load Balancers can take 5-10 minutes to fully propagate their IP addresses globally.</strong> The agent&#39;s commands will succeed immediately, but the endpoint may return 404/502 errors until propagation completes.</p>
 <h2 is-upgraded>Part 3: Canary Deployment</h2>
-<p>The <code>canary-deploy</code> skill deploys a new revision without traffic, then gradually shifts:</p>
-<pre>gcloud run deploy enterprise-api \
-  --source app/ \
+<p>The <code>canary-deploy</code> skill reuses the <strong>existing container image</strong> (no rebuild!) and deploys a new revision without traffic, then gradually shifts:</p>
+<pre>IMAGE=$(gcloud run services describe enterprise-api \
+  --region us-central1 \
+  --format=&#39;value(spec.template.spec.containers[0].image)&#39;)
+
+gcloud run deploy enterprise-api \
+  --image $IMAGE \
   --region us-central1 \
   --no-traffic \
   --tag canary
@@ -460,7 +555,7 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 </pre>
 <h2 is-upgraded>What you built</h2>
 <ul>
-<li>✅ Automated CI/CD with Cloud Build</li>
+<li>✅ Automated CI/CD configuration with Cloud Build</li>
 <li>✅ Authored Cloud Armor WAF rules (XSS, SQLi, rate limiting)</li>
 <li>✅ Safe canary deployments with traffic splitting</li>
 </ul>
@@ -491,12 +586,12 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 <tr><td colspan="1" rowspan="1"><p>3</p>
 </td><td colspan="1" rowspan="1"><p>Data Engineer</p>
 </td><td colspan="1" rowspan="1"><p>Python SDK</p>
-</td><td colspan="1" rowspan="1"><p>Cloud SQL pgvector + BigQuery streaming</p>
+</td><td colspan="1" rowspan="1"><p>BigQuery Vector Search + BigQuery streaming</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>4</p>
 </td><td colspan="1" rowspan="1"><p>SRE</p>
 </td><td colspan="1" rowspan="1"><p>Antigravity CLI</p>
-</td><td colspan="1" rowspan="1"><p>Cloud Build CI/CD + Cloud Armor WAF (policy authored) + Canary deploys</p>
+</td><td colspan="1" rowspan="1"><p>Cloud Build config + Cloud Armor WAF + Canary deploys</p>
 </td></tr>
 </table>
 <h2 is-upgraded>Key takeaways</h2>
@@ -517,8 +612,8 @@ export PROJECT_ID=$(gcloud config get-value project)
 # Delete Cloud Run service
 gcloud run services delete enterprise-api --region us-central1 --quiet
 
-# Delete Cloud SQL instance
-gcloud sql instances delete enterprise-db --quiet
+# Delete BigQuery dataset and tables
+bq rm -r -f -d ${PROJECT_ID}:enterprise_analytics
 
 # Delete GCS bucket
 gcloud storage rm -r gs://${PROJECT_ID}-doc-intake/ --quiet
@@ -534,6 +629,13 @@ gcloud secrets delete gemini-api-key --quiet
 
 # Delete BigQuery dataset
 bq rm -r -f ${PROJECT_ID}:enterprise_analytics
+
+# Delete Global Load Balancer resources
+gcloud compute forwarding-rules delete enterprise-api-forwarding-rule --global --quiet
+gcloud compute target-http-proxies delete enterprise-api-http-proxy --quiet
+gcloud compute url-maps delete enterprise-api-url-map --quiet
+gcloud compute backend-services delete enterprise-api-backend --global --quiet
+gcloud compute network-endpoint-groups delete enterprise-api-neg --region us-central1 --quiet
 
 # Delete Cloud Armor policy
 gcloud compute security-policies delete enterprise-waf --quiet
@@ -555,7 +657,7 @@ gcloud artifacts repositories delete cloud-run-source-deploy \
 <li><a href="https://cloud.google.com/run/docs" target="_blank">Cloud Run Documentation</a></li>
 <li><a href="https://cloud.google.com/secret-manager/docs" target="_blank">Secret Manager Documentation</a></li>
 <li><a href="https://cloud.google.com/eventarc/docs" target="_blank">Eventarc Documentation</a></li>
-<li><a href="https://cloud.google.com/sql/docs" target="_blank">Cloud SQL Documentation</a></li>
+<li><a href="https://cloud.google.com/bigquery/docs/vector-search" target="_blank">BigQuery Vector Search</a></li>
 <li><a href="https://cloud.google.com/bigquery/docs" target="_blank">BigQuery Documentation</a></li>
 <li><a href="https://cloud.google.com/build/docs" target="_blank">Cloud Build Documentation</a></li>
 <li><a href="https://cloud.google.com/armor/docs" target="_blank">Cloud Armor Documentation</a></li>
