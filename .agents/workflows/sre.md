@@ -23,9 +23,9 @@ You are the **SRE** (@sre). Follow this runbook **exactly and sequentially**.
 5. Verify with `cat infra/cloudbuild.yaml`
 6. **Do NOT run `gcloud builds submit`**
 
-## Step 2 — Cloud Armor WAF
+## Step 2 — Cloud Armor & Load Balancer
 1. Read `.agents/skills/apply-cloud-armor/SKILL.md`
-2. Execute its Instructions section (create policy + 3 rules)
+2. Execute its Instructions section in full (create policy, rules, NEG, backend service, proxy, and restrict ingress).
 3. Run verification: `bash .agents/skills/apply-cloud-armor/scripts/verify_armor.sh`
 
 ## Step 3 — Canary Deployment
