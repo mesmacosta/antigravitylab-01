@@ -31,8 +31,8 @@ antigravitylab-01/
 │   │   └── canary-deploy/
 │   └── workflows/             # Slash command workflows (/developer, /architect, etc.)
 ├── codelabs/
-│   ├── antigravity-enterprise-playbook.md    # Codelab source (claat markdown)
-│   └── antigravity-enterprise-playbook/      # Exported HTML (generated)
+│   ├── getting-started-with-antigravity-ecosystem.md    # Codelab source (claat markdown)
+│   └── getting-started-with-antigravity-ecosystem/      # Exported HTML (generated)
 │       ├── index.html
 │       └── codelab.json
 ├── app/                       # Application code (generated during lab)
@@ -46,10 +46,10 @@ antigravitylab-01/
 
 ```bash
 cd codelabs
-claat export antigravity-enterprise-playbook.md
+claat export getting-started-with-antigravity-ecosystem.md
 ```
 
-This generates the `antigravity-enterprise-playbook/` directory containing `index.html` and `codelab.json`.
+This generates the `getting-started-with-antigravity-ecosystem/` directory containing `index.html` and `codelab.json`.
 
 ### Serve Locally
 
@@ -58,21 +58,21 @@ cd codelabs
 claat serve -addr localhost:9090
 ```
 
-Then open: [http://localhost:9090/antigravity-enterprise-playbook/](http://localhost:9090/antigravity-enterprise-playbook/)
+Then open: [http://localhost:9090/getting-started-with-antigravity-ecosystem/](http://localhost:9090/getting-started-with-antigravity-ecosystem/)
 
 ### Rebuild After Edits
 
-After editing `antigravity-enterprise-playbook.md`, re-export and the serve will pick up changes:
+After editing `getting-started-with-antigravity-ecosystem.md`, re-export and the serve will pick up changes:
 
 ```bash
 cd codelabs
-claat export antigravity-enterprise-playbook.md
+claat export getting-started-with-antigravity-ecosystem.md
 # If claat serve is already running, just refresh the browser
 ```
 
 ## Editing the Codelab
 
-The codelab source is a single markdown file: `codelabs/antigravity-enterprise-playbook.md`
+The codelab source is a single markdown file: `codelabs/getting-started-with-antigravity-ecosystem.md`
 
 ### Format Reference
 
@@ -118,7 +118,7 @@ Workflows live in `.agents/workflows/<name>.md`. Each maps a slash command (e.g.
 
 | Action | Command |
 |--------|---------|
-| Export codelab | `cd codelabs && claat export antigravity-enterprise-playbook.md` |
+| Export codelab | `cd codelabs && claat export getting-started-with-antigravity-ecosystem.md` |
 | Serve locally | `cd codelabs && claat serve -addr localhost:9090` |
 | List all skills | `find .agents/skills -name 'SKILL.md'` |
 | List all workflows | `ls .agents/workflows/` |
