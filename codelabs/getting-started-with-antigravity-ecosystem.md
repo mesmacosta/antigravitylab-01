@@ -12,7 +12,7 @@ tags: antigravity, cloud-run, enterprise, skills
 ## Introduction
 Duration: 5:00
 
-This workshop is the definitive enterprise playbook for mastering the agentic future on Google Cloud. We provide an end-to-end roadmap that guides you from the first vibe of an idea to a full-scale, operational reality.
+This workshop is the definitive Getting Started guide for mastering the agentic future on Google Cloud. We provide an end-to-end roadmap that guides you from the first vibe of an idea to a full-scale, operational reality.
 
 Across four interconnected labs, you will learn how the specialized skills of a **Developer**, **Architect**, **Data Engineer**, and **SRE** must converge to create, manage, and scale enterprise-grade systems — all powered by Google Antigravity's agent-driven workflows.
 
@@ -344,7 +344,7 @@ bash .agents/skills/wire-pubsub-eventarc/scripts/verify_eventarc_e2e.sh
 Upload a test file to trigger the pipeline:
 
 ```console
-echo "Hello from the Enterprise Playbook" > test-doc.txt
+echo "Hello from the Getting Started with the Antigravity Ecosystem" > test-doc.txt
 gcloud storage cp test-doc.txt gs://${PROJECT_ID}-doc-intake/
 ```
 

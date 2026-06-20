@@ -1,5 +1,5 @@
 ---
-description: Start Lab 3 — The Data Engineer phase of the Enterprise Playbook
+description: Start Lab 3 — The Data Engineer phase of the Getting Started with the Antigravity Ecosystem
 ---
 When the user types `/dataengineer`, orchestrate the following:
 

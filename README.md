@@ -1,6 +1,6 @@
-# Antigravity Enterprise Playbook
+# Getting Started with the Antigravity Ecosystem
 
-Welcome to the **Antigravity Enterprise Playbook**! This repository contains a comprehensive Google Codelab that teaches developers how to build an event-driven, secure, AI-powered application on Google Cloud using the **Antigravity Agentic Framework**.
+Welcome to the **Getting Started with the Antigravity Ecosystem**! This repository contains a comprehensive Google Codelab that teaches developers how to build an event-driven, secure, AI-powered application on Google Cloud using the **Antigravity Agentic Framework**.
 
 Instead of writing code manually, you will orchestrate a team of specialized AI agents (Developer, Architect, Data Engineer, and SRE) to provision infrastructure, write microservices, and configure CI/CD pipelines.
 

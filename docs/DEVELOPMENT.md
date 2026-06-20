@@ -1,4 +1,4 @@
-# Antigravity Enterprise Playbook — Development Guide
+# Getting Started with the Antigravity Ecosystem — Development Guide
 
 ## Prerequisites
 

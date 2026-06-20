@@ -1,5 +1,5 @@
 ---
-description: Start Lab 1 — The Developer phase of the Enterprise Playbook
+description: Start Lab 1 — The Developer phase of the Getting Started with the Antigravity Ecosystem
 ---
 When the user types `/developer`, orchestrate the following:
 

@@ -1,5 +1,5 @@
 ---
-description: Start Lab 4 — The SRE phase of the Enterprise Playbook
+description: Start Lab 4 — The SRE phase of the Getting Started with the Antigravity Ecosystem
 ---
 
 # SRE Workflow — Strict Runbook

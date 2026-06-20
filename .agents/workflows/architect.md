@@ -1,5 +1,5 @@
 ---
-description: Start Lab 2 — The Architect phase of the Enterprise Playbook
+description: Start Lab 2 — The Architect phase of the Getting Started with the Antigravity Ecosystem
 ---
 When the user types `/architect`, orchestrate the following:
 
