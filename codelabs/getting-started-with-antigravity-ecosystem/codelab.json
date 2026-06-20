@@ -3,13 +3,13 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2026-06-18T20:18:07-03:00",
-  "id": "antigravity-enterprise-playbook",
+  "updated": "2026-06-20T13:14:17-03:00",
+  "id": "getting-started-with-antigravity-ecosystem",
   "duration": 78,
-  "title": "Building with Google Antigravity — The Enterprise Playbook",
+  "title": "Getting Started with the Antigravity Ecosystem",
   "authors": "Developer Ecosystem - Americas Team",
-  "summary": "The Enterprise Playbook for Mastering the Agentic Future on Google Cloud",
-  "source": "antigravity-enterprise-playbook.md",
+  "summary": "Getting Started with the Antigravity Ecosystem on Google Cloud",
+  "source": "getting-started-with-antigravity-ecosystem.md",
   "theme": "",
   "status": [
     "published"
@@ -27,5 +27,5 @@
     "web"
   ],
   "feedback": "https://github.com/mesmacosta/antigravitylab-01/issues",
-  "url": "antigravity-enterprise-playbook"
+  "url": "getting-started-with-antigravity-ecosystem"
 }

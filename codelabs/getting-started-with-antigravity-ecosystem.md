@@ -1,5 +1,5 @@
-summary: The Enterprise Playbook for Mastering the Agentic Future on Google Cloud
-id: antigravity-enterprise-playbook
+summary: Getting Started with the Antigravity Ecosystem on Google Cloud
+id: getting-started-with-antigravity-ecosystem
 categories: Cloud, AI, Antigravity
 environments: Web
 status: Published
@@ -7,7 +7,7 @@ feedback link: https://github.com/mesmacosta/antigravitylab-01/issues
 authors: Developer Ecosystem - Americas Team
 tags: antigravity, cloud-run, enterprise, skills
 
-# Building with Google Antigravity — The Enterprise Playbook
+# Getting Started with the Antigravity Ecosystem
 
 ## Introduction
 Duration: 5:00
