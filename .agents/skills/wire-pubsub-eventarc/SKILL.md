@@ -34,7 +34,8 @@ asynchronous processing on the Cloud Run service via Eventarc.
    gcloud projects add-iam-policy-binding $PROJECT_ID \
      --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-eventarc.iam.gserviceaccount.com" \
      --role="roles/eventarc.serviceAgent"
-   sleep 30
+   echo "Waiting 60s for IAM role propagation..."
+   sleep 60
    ```
 3. **Create the Pub/Sub topic**:
    ```

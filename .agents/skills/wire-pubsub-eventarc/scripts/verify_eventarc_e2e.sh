@@ -20,18 +20,22 @@ if ! gcloud storage cp "$TEST_FILE" "gs://${BUCKET_NAME}/e2e-test-doc.json" > /d
     exit 1
 fi
 
-echo "⏳ Waiting 15 seconds for Eventarc propagation and Cloud Run processing..."
-sleep 15
+echo "⏳ Waiting 30 seconds for Eventarc propagation and Cloud Run processing..."
+sleep 30
 
-# 3. Check Cloud Run logs for the event
-echo "📝 Checking Cloud Run logs for service ${SERVICE_NAME}..."
-LOGS=$(gcloud logging read "resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"${SERVICE_NAME}\" AND textPayload:\"Process endpoint called\"" --limit=1 --format="value(textPayload)" --freshness=2m 2>/dev/null || echo "")
+for i in {1..3}; do
+    echo "📝 Checking Cloud Run logs for service ${SERVICE_NAME} (Attempt $i/3)..."
+    LOGS=$(gcloud logging read "resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"${SERVICE_NAME}\" AND textPayload:\"Process endpoint called\"" --limit=1 --format="value(textPayload)" --freshness=5m 2>/dev/null || echo "")
+    
+    if [[ -n "$LOGS" ]]; then
+        echo "✅ Eventarc end-to-end test passed! Event reached Cloud Run successfully."
+        echo "   Log output: $LOGS"
+        exit 0
+    fi
+    echo "   Not found yet, waiting 15 seconds..."
+    sleep 15
+done
 
-if [[ -n "$LOGS" ]]; then
-    echo "✅ Eventarc end-to-end test passed! Event reached Cloud Run successfully."
-    echo "   Log output: $LOGS"
-else
-    echo "❌ Eventarc end-to-end test failed. Could not find process log in Cloud Run."
-    echo "   Please check Eventarc trigger configuration or Cloud Run logs manually."
-    exit 1
-fi
+echo "❌ Eventarc end-to-end test failed. Could not find process log in Cloud Run."
+echo "   Please check Eventarc trigger configuration or Cloud Run logs manually."
+exit 1

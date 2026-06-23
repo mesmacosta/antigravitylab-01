@@ -2,6 +2,7 @@
 # Verifies Pub/Sub topic and Eventarc trigger exist.
 set -euo pipefail
 
+PROJECT_ID=${PROJECT_ID:-$(gcloud config get-value project 2>/dev/null)}
 echo "🔍 Checking Pub/Sub topic..."
 if gcloud pubsub topics describe document-processing > /dev/null 2>&1; then
   echo "✅ Pub/Sub topic 'document-processing' exists."
