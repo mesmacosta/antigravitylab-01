@@ -46,8 +46,8 @@ A serverless, event-driven **document processing pipeline** on Google Cloud that
 * [Git](https://git-scm.com/downloads) installed
 * Basic familiarity with Python and the terminal
 
-Positive
-: **CLI Compatibility**: All `gcloud`, `bq`, and `python3` commands in this lab are compatible with GCP Cloud Shell tooling. Since Antigravity runs on your local machine, the agent executes these commands locally via your authenticated `gcloud` CLI.
+> aside positive
+> **CLI Compatibility**: All `gcloud`, `bq`, and `python3` commands in this lab are compatible with GCP Cloud Shell tooling. Since Antigravity runs on your local machine, the agent executes these commands locally via your authenticated `gcloud` CLI.
 
 ## Set Up Your Environment
 Duration: 5:00
@@ -83,8 +83,8 @@ export PROJECT_ID=$(gcloud config get-value project)
 echo "Project ID: $PROJECT_ID"
 ```
 
-Positive
-: Verify the output shows your expected project ID before continuing. If it's blank or incorrect, re-run `gcloud config set project` with the correct value.
+> aside positive
+> Verify the output shows your expected project ID before continuing. If it's blank or incorrect, re-run `gcloud config set project` with the correct value.
 
 ### Enable required APIs
 
@@ -102,8 +102,8 @@ gcloud services enable \
   storage.googleapis.com
 ```
 
-Positive
-: This command enables 10 APIs and may take **1-2 minutes** to complete. Wait for it to finish before continuing.
+> aside positive
+> This command enables 10 APIs and may take **1-2 minutes** to complete. Wait for it to finish before continuing.
 
 ### Clone the starter repo
 
@@ -120,8 +120,8 @@ cd antigravitylab-01
 2. Open the `antigravitylab-01` folder as a workspace (e.g., via **File > Open Folder**).
 3. Start a new conversation in this workspace.
 
-Positive
-: **Troubleshooting Tip**: Generative AI workflows can occasionally get confused. If the agent ever seems stuck or provides an unexpected response, simply tell it to "Stop" and re-run your slash command, or open a fresh conversation.
+> aside positive
+> **Troubleshooting Tip**: Generative AI workflows can occasionally get confused. If the agent ever seems stuck or provides an unexpected response, simply tell it to "Stop" and re-run your slash command, or open a fresh conversation.
 
 ### Explore the workspace structure
 
@@ -156,8 +156,8 @@ You should see:
 .agents/workflows/sre.md
 ```
 
-Positive
-: **8 Skills** are pre-authored with hardcoded `gcloud` commands, validation scripts, and constraints. They act as guardrails — preventing the agent from deviating during the workshop.
+> aside positive
+> **8 Skills** are pre-authored with hardcoded `gcloud` commands, validation scripts, and constraints. They act as guardrails — preventing the agent from deviating during the workshop.
 
 ## Understand the Architecture
 Duration: 3:00
@@ -237,14 +237,14 @@ cd app && gcloud run deploy enterprise-api \
   --allow-unauthenticated
 ```
 
-Positive
-: `gcloud run deploy --source .` uses **Google Cloud Buildpacks** to automatically containerize your Python app. No Dockerfile needed!
+> aside positive
+> `gcloud run deploy --source .` uses **Google Cloud Buildpacks** to automatically containerize your Python app. No Dockerfile needed!
 
-Negative
-: **Enterprise Warning**: If you are running this in a corporate Google Cloud environment, the deployment might fail with an IAM error regarding `allUsers`. This is caused by a **Domain Restricted Sharing** Organization Policy. If this happens, ask the agent to "Deploy again, but do not allow unauthenticated access."
+> aside negative
+> **Enterprise Warning**: If you are running this in a corporate Google Cloud environment, the deployment might fail with an IAM error regarding `allUsers`. This is caused by a **Domain Restricted Sharing** Organization Policy. If this happens, ask the agent to "Deploy again, but do not allow unauthenticated access."
 
-Positive
-: The first deployment in a project may prompt you to create an **Artifact Registry** repository. Type `Y` to confirm if prompted.
+> aside positive
+> The first deployment in a project may prompt you to create an **Artifact Registry** repository. Type `Y` to confirm if prompted.
 
 ### Validate the scaffold
 
@@ -314,8 +314,8 @@ printf "PLACEHOLDER_KEY_FOR_LAB" | gcloud secrets create gemini-api-key \
   --replication-policy=automatic
 ```
 
-Negative
-: **Security Best Practice**: Never hardcode API keys in source code. Always use Secret Manager to inject them at runtime.
+> aside negative
+> **Security Best Practice**: Never hardcode API keys in source code. Always use Secret Manager to inject them at runtime.
 
 ### Part 2: Event-Driven Architecture
 
@@ -326,8 +326,8 @@ The `wire-pubsub-eventarc` skill will:
 3. Create a GCS bucket for document ingestion
 4. Create an Eventarc trigger routing `google.cloud.storage.object.v1.finalized` events to Cloud Run
 
-Negative
-: **Fresh Project Warning**: On a brand-new project, the Eventarc Service Agent may not be initialized yet. If the trigger creation fails with `FAILED_PRECONDITION`, wait 1-2 minutes after enabling the APIs and try again. The agent handles this automatically, but if you run into issues, you can force initialization by running: `gcloud eventarc providers describe google.cloud.storage --location=us-central1`
+> aside negative
+> **Fresh Project Warning**: On a brand-new project, the Eventarc Service Agent may not be initialized yet. If the trigger creation fails with `FAILED_PRECONDITION`, wait 1-2 minutes after enabling the APIs and try again. The agent handles this automatically, but if you run into issues, you can force initialization by running: `gcloud eventarc providers describe google.cloud.storage --location=us-central1`
 
 ### Verify
 
@@ -490,8 +490,8 @@ The agent will:
 4. Set up a **BigQuery** dataset and table for analytics
 5. Update the Cloud Run service to stream data to BigQuery
 
-Negative
-: **Speed Notice**: Unlike traditional database provisioning which takes 5-10 minutes, BigQuery datasets and tables provision essentially instantly, allowing the agent to complete this workflow in under 10 seconds.
+> aside negative
+> **Speed Notice**: Unlike traditional database provisioning which takes 5-10 minutes, BigQuery datasets and tables provision essentially instantly, allowing the agent to complete this workflow in under 10 seconds.
 
 ### Part 1: BigQuery Vector Search
 
@@ -558,8 +558,8 @@ First, install the Antigravity CLI:
 curl -fsSL https://antigravity.google/cli/install.sh | bash
 ```
 
-Positive
-: **CLI Authentication Bootstrapping**: Because the CLI uses an interactive TUI, running it with a command immediately can cause formatting issues in Cloud Shell. To bootstrap it cleanly, first just type `agy` and press Enter. Select **2. Use a Google Cloud project** when prompted. Once you see the chat interface, press **Ctrl+C** to exit.
+> aside positive
+> **CLI Authentication Bootstrapping**: Because the CLI uses an interactive TUI, running it with a command immediately can cause formatting issues in Cloud Shell. To bootstrap it cleanly, first just type `agy` and press Enter. Select **2. Use a Google Cloud project** when prompted. Once you see the chat interface, press **Ctrl+C** to exit.
 
 Now run the SRE workflow with the `-i` flag, which sends the initial prompt and keeps the session interactive:
 
@@ -567,11 +567,11 @@ Now run the SRE workflow with the `-i` flag, which sends the initial prompt and 
 agy -i "run /sre"
 ```
 
-Positive
-: The `-i` flag sends `run /sre` as the first message to the agent. The agent matches this to the pre-authored workflow at `.agents/workflows/sre.md` and begins executing the SRE runbook immediately.
+> aside positive
+> The `-i` flag sends `run /sre` as the first message to the agent. The agent matches this to the pre-authored workflow at `.agents/workflows/sre.md` and begins executing the SRE runbook immediately.
 
-Positive
-: If you opened a new Cloud Shell tab, re-run `cd antigravitylab-01` first.
+> aside positive
+> If you opened a new Cloud Shell tab, re-run `cd antigravitylab-01` first.
 
 The agent will:
 
@@ -586,11 +586,11 @@ The agent will:
 
 The `setup-cloud-build` skill reads the golden template from `references/cloudbuild.yaml.tmpl` and generates `infra/cloudbuild.yaml`:
 
-Positive
-: Behind the scenes, the agent grants the **Cloud Build Service Account** the `roles/run.admin` and `roles/iam.serviceAccountUser` roles. This is required so Cloud Build can deploy new revisions to Cloud Run on your behalf.
+> aside positive
+> Behind the scenes, the agent grants the **Cloud Build Service Account** the `roles/run.admin` and `roles/iam.serviceAccountUser` roles. This is required so Cloud Build can deploy new revisions to Cloud Run on your behalf.
 
-Positive
-: **Speed Optimization**: The agent generates the Cloud Build YAML configuration but does **not** submit a build. In production, this pipeline would be triggered by a `git push` or a manual `gcloud builds submit`. Skipping the actual build saves ~5 minutes during the workshop.
+> aside positive
+> **Speed Optimization**: The agent generates the Cloud Build YAML configuration but does **not** submit a build. In production, this pipeline would be triggered by a `git push` or a manual `gcloud builds submit`. Skipping the actual build saves ~5 minutes during the workshop.
 
 ### Part 2: Cloud Armor WAF
 
@@ -605,8 +605,8 @@ gcloud compute security-policies create enterprise-waf \
   --description="Enterprise WAF policy for Cloud Run services"
 ```
 
-Negative
-: **Architecture Note**: Cloud Armor cannot be attached directly to a Cloud Run service. The agent provisions a **Global External Application Load Balancer** with a Serverless NEG and strictly locks down the Cloud Run ingress. **Please note: Google Cloud Load Balancers can take 5-10 minutes to fully propagate their IP addresses globally.** The agent's commands will succeed immediately, but the endpoint may return 404/502 errors until propagation completes.
+> aside negative
+> **Architecture Note**: Cloud Armor cannot be attached directly to a Cloud Run service. The agent provisions a **Global External Application Load Balancer** with a Serverless NEG and strictly locks down the Cloud Run ingress. **Please note: Google Cloud Load Balancers can take 5-10 minutes to fully propagate their IP addresses globally.** The agent's commands will succeed immediately, but the endpoint may return 404/502 errors until propagation completes.
 
 ### Part 3: Canary Deployment
 
@@ -632,8 +632,8 @@ gcloud run services update-traffic enterprise-api \
   --to-tags canary=10
 ```
 
-Positive
-: The agent will **HALT** after the 10% split and ask you: "Do you want to promote to 100% or rollback?" This is the Approval Gate in action!
+> aside positive
+> The agent will **HALT** after the 10% split and ask you: "Do you want to promote to 100% or rollback?" This is the Approval Gate in action!
 
 ### Monitor the canary
 

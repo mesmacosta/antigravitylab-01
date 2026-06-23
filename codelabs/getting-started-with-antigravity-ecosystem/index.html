@@ -62,7 +62,8 @@
 <li><a href="https://git-scm.com/downloads" target="_blank">Git</a> installed</li>
 <li>Basic familiarity with Python and the terminal</li>
 </ul>
-<p>Positive : <strong>CLI Compatibility</strong>: All <code>gcloud</code>, <code>bq</code>, and <code>python3</code> commands in this lab are compatible with GCP Cloud Shell tooling. Since Antigravity runs on your local machine, the agent executes these commands locally via your authenticated <code>gcloud</code> CLI.</p>
+<aside class="special"><p><strong>CLI Compatibility</strong>: All <code>gcloud</code>, <code>bq</code>, and <code>python3</code> commands in this lab are compatible with GCP Cloud Shell tooling. Since Antigravity runs on your local machine, the agent executes these commands locally via your authenticated <code>gcloud</code> CLI.</p>
+</aside>
 
 
       </google-codelab-step>
@@ -91,7 +92,8 @@ gcloud auth application-default login
 export PROJECT_ID=$(gcloud config get-value project)
 echo &#34;Project ID: $PROJECT_ID&#34;
 </pre>
-<p>Positive : Verify the output shows your expected project ID before continuing. If it&#39;s blank or incorrect, re-run <code>gcloud config set project</code> with the correct value.</p>
+<aside class="special"><p> Verify the output shows your expected project ID before continuing. If it&#39;s blank or incorrect, re-run <code>gcloud config set project</code> with the correct value.</p>
+</aside>
 <h2 is-upgraded>Enable required APIs</h2>
 <pre>gcloud services enable \
   run.googleapis.com \
@@ -105,7 +107,8 @@ echo &#34;Project ID: $PROJECT_ID&#34;
   compute.googleapis.com \
   storage.googleapis.com
 </pre>
-<p>Positive : This command enables 10 APIs and may take <strong>1-2 minutes</strong> to complete. Wait for it to finish before continuing.</p>
+<aside class="special"><p> This command enables 10 APIs and may take <strong>1-2 minutes</strong> to complete. Wait for it to finish before continuing.</p>
+</aside>
 <h2 is-upgraded>Clone the starter repo</h2>
 <p>The starter repo contains all the pre-authored Antigravity Skills, workflows, and validation scripts:</p>
 <pre>git clone https://github.com/mesmacosta/antigravitylab-01.git
@@ -117,7 +120,8 @@ cd antigravitylab-01
 <li>Open the <code>antigravitylab-01</code> folder as a workspace (e.g., via <strong>File &gt; Open Folder</strong>).</li>
 <li>Start a new conversation in this workspace.</li>
 </ol>
-<p>Positive : <strong>Troubleshooting Tip</strong>: Generative AI workflows can occasionally get confused. If the agent ever seems stuck or provides an unexpected response, simply tell it to &#34;Stop&#34; and re-run your slash command, or open a fresh conversation.</p>
+<aside class="special"><p><strong>Troubleshooting Tip</strong>: Generative AI workflows can occasionally get confused. If the agent ever seems stuck or provides an unexpected response, simply tell it to &#34;Stop&#34; and re-run your slash command, or open a fresh conversation.</p>
+</aside>
 <h2 is-upgraded>Explore the workspace structure</h2>
 <p>Take a moment to explore the pre-authored files. In the Antigravity IDE terminal or your system terminal, run:</p>
 <pre>find .agents -type f | sort
@@ -144,7 +148,8 @@ cd antigravitylab-01
 .agents/workflows/developer.md
 .agents/workflows/sre.md
 </code></pre>
-<p>Positive : <strong>8 Skills</strong> are pre-authored with hardcoded <code>gcloud</code> commands, validation scripts, and constraints. They act as guardrails — preventing the agent from deviating during the workshop.</p>
+<aside class="special"><p><strong>8 Skills</strong> are pre-authored with hardcoded <code>gcloud</code> commands, validation scripts, and constraints. They act as guardrails — preventing the agent from deviating during the workshop.</p>
+</aside>
 
 
       </google-codelab-step>
@@ -233,9 +238,12 @@ cd antigravitylab-01
   --region us-central1 \
   --allow-unauthenticated
 </pre>
-<p>Positive : <code>gcloud run deploy --source .</code> uses <strong>Google Cloud Buildpacks</strong> to automatically containerize your Python app. No Dockerfile needed!</p>
-<p>Negative : <strong>Enterprise Warning</strong>: If you are running this in a corporate Google Cloud environment, the deployment might fail with an IAM error regarding <code>allUsers</code>. This is caused by a <strong>Domain Restricted Sharing</strong> Organization Policy. If this happens, ask the agent to &#34;Deploy again, but do not allow unauthenticated access.&#34;</p>
-<p>Positive : The first deployment in a project may prompt you to create an <strong>Artifact Registry</strong> repository. Type <code>Y</code> to confirm if prompted.</p>
+<aside class="special"><p><code>gcloud run deploy --source .</code> uses <strong>Google Cloud Buildpacks</strong> to automatically containerize your Python app. No Dockerfile needed!</p>
+</aside>
+<aside class="warning"><p><strong>Enterprise Warning</strong>: If you are running this in a corporate Google Cloud environment, the deployment might fail with an IAM error regarding <code>allUsers</code>. This is caused by a <strong>Domain Restricted Sharing</strong> Organization Policy. If this happens, ask the agent to &#34;Deploy again, but do not allow unauthenticated access.&#34;</p>
+</aside>
+<aside class="special"><p> The first deployment in a project may prompt you to create an <strong>Artifact Registry</strong> repository. Type <code>Y</code> to confirm if prompted.</p>
+</aside>
 <h2 is-upgraded>Validate the scaffold</h2>
 <p>The agent runs the validation script automatically, but you can also run it manually:</p>
 <pre>python3 .agents/skills/scaffold-cloud-run-service/scripts/validate_scaffold.py
@@ -286,7 +294,8 @@ curl ${SERVICE_URL}/health
   --data-file=- \
   --replication-policy=automatic
 </pre>
-<p>Negative : <strong>Security Best Practice</strong>: Never hardcode API keys in source code. Always use Secret Manager to inject them at runtime.</p>
+<aside class="warning"><p><strong>Security Best Practice</strong>: Never hardcode API keys in source code. Always use Secret Manager to inject them at runtime.</p>
+</aside>
 <h2 is-upgraded>Part 2: Event-Driven Architecture</h2>
 <p>The <code>wire-pubsub-eventarc</code> skill will:</p>
 <ol type="1">
@@ -295,7 +304,8 @@ curl ${SERVICE_URL}/health
 <li>Create a GCS bucket for document ingestion</li>
 <li>Create an Eventarc trigger routing <code>google.cloud.storage.object.v1.finalized</code> events to Cloud Run</li>
 </ol>
-<p>Negative : <strong>Fresh Project Warning</strong>: On a brand-new project, the Eventarc Service Agent may not be initialized yet. If the trigger creation fails with <code>FAILED_PRECONDITION</code>, wait 1-2 minutes after enabling the APIs and try again. The agent handles this automatically, but if you run into issues, you can force initialization by running: <code>gcloud eventarc providers describe google.cloud.storage --location=us-central1</code></p>
+<aside class="warning"><p><strong>Fresh Project Warning</strong>: On a brand-new project, the Eventarc Service Agent may not be initialized yet. If the trigger creation fails with <code>FAILED_PRECONDITION</code>, wait 1-2 minutes after enabling the APIs and try again. The agent handles this automatically, but if you run into issues, you can force initialization by running: <code>gcloud eventarc providers describe google.cloud.storage --location=us-central1</code></p>
+</aside>
 <h2 is-upgraded>Verify</h2>
 <p>Run the verification scripts in your <strong>system terminal</strong> (from the <code>antigravitylab-01</code> directory), or ask the agent to verify for you:</p>
 <pre>bash .agents/skills/inject-secrets/scripts/verify_secrets.sh
@@ -442,7 +452,8 @@ python3 harness.py
 <li>Set up a <strong>BigQuery</strong> dataset and table for analytics</li>
 <li>Update the Cloud Run service to stream data to BigQuery</li>
 </ol>
-<p>Negative : <strong>Speed Notice</strong>: Unlike traditional database provisioning which takes 5-10 minutes, BigQuery datasets and tables provision essentially instantly, allowing the agent to complete this workflow in under 10 seconds.</p>
+<aside class="warning"><p><strong>Speed Notice</strong>: Unlike traditional database provisioning which takes 5-10 minutes, BigQuery datasets and tables provision essentially instantly, allowing the agent to complete this workflow in under 10 seconds.</p>
+</aside>
 <h2 is-upgraded>Part 1: BigQuery Vector Search</h2>
 <p>The <code>provision-bigquery-vector</code> skill creates:</p>
 <ul>
@@ -492,12 +503,15 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 <p>First, install the Antigravity CLI:</p>
 <pre>curl -fsSL https://antigravity.google/cli/install.sh | bash
 </pre>
-<p>Positive : <strong>CLI Authentication Bootstrapping</strong>: Because the CLI uses an interactive TUI, running it with a command immediately can cause formatting issues in Cloud Shell. To bootstrap it cleanly, first just type <code>agy</code> and press Enter. Select <strong>2. Use a Google Cloud project</strong> when prompted. Once you see the chat interface, press <strong>Ctrl+C</strong> to exit.</p>
+<aside class="special"><p><strong>CLI Authentication Bootstrapping</strong>: Because the CLI uses an interactive TUI, running it with a command immediately can cause formatting issues in Cloud Shell. To bootstrap it cleanly, first just type <code>agy</code> and press Enter. Select <strong>2. Use a Google Cloud project</strong> when prompted. Once you see the chat interface, press <strong>Ctrl+C</strong> to exit.</p>
+</aside>
 <p>Now run the SRE workflow with the <code>-i</code> flag, which sends the initial prompt and keeps the session interactive:</p>
 <pre>agy -i &#34;run /sre&#34;
 </pre>
-<p>Positive : The <code>-i</code> flag sends <code>run /sre</code> as the first message to the agent. The agent matches this to the pre-authored workflow at <code>.agents/workflows/sre.md</code> and begins executing the SRE runbook immediately.</p>
-<p>Positive : If you opened a new Cloud Shell tab, re-run <code>cd antigravitylab-01</code> first.</p>
+<aside class="special"><p> The <code>-i</code> flag sends <code>run /sre</code> as the first message to the agent. The agent matches this to the pre-authored workflow at <code>.agents/workflows/sre.md</code> and begins executing the SRE runbook immediately.</p>
+</aside>
+<aside class="special"><p> If you opened a new Cloud Shell tab, re-run <code>cd antigravitylab-01</code> first.</p>
+</aside>
 <p>The agent will:</p>
 <ol type="1">
 <li>Adopt the <strong>@sre</strong> persona</li>
@@ -508,8 +522,10 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 </ol>
 <h2 is-upgraded>Part 1: Cloud Build CI/CD</h2>
 <p>The <code>setup-cloud-build</code> skill reads the golden template from <code>references/cloudbuild.yaml.tmpl</code> and generates <code>infra/cloudbuild.yaml</code>:</p>
-<p>Positive : Behind the scenes, the agent grants the <strong>Cloud Build Service Account</strong> the <code>roles/run.admin</code> and <code>roles/iam.serviceAccountUser</code> roles. This is required so Cloud Build can deploy new revisions to Cloud Run on your behalf.</p>
-<p>Positive : <strong>Speed Optimization</strong>: The agent generates the Cloud Build YAML configuration but does <strong>not</strong> submit a build. In production, this pipeline would be triggered by a <code>git push</code> or a manual <code>gcloud builds submit</code>. Skipping the actual build saves ~5 minutes during the workshop.</p>
+<aside class="special"><p> Behind the scenes, the agent grants the <strong>Cloud Build Service Account</strong> the <code>roles/run.admin</code> and <code>roles/iam.serviceAccountUser</code> roles. This is required so Cloud Build can deploy new revisions to Cloud Run on your behalf.</p>
+</aside>
+<aside class="special"><p><strong>Speed Optimization</strong>: The agent generates the Cloud Build YAML configuration but does <strong>not</strong> submit a build. In production, this pipeline would be triggered by a <code>git push</code> or a manual <code>gcloud builds submit</code>. Skipping the actual build saves ~5 minutes during the workshop.</p>
+</aside>
 <h2 is-upgraded>Part 2: Cloud Armor WAF</h2>
 <p>The <code>apply-cloud-armor</code> skill creates a security policy with:</p>
 <ul>
@@ -520,7 +536,8 @@ bash .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 <pre>gcloud compute security-policies create enterprise-waf \
   --description=&#34;Enterprise WAF policy for Cloud Run services&#34;
 </pre>
-<p>Negative : <strong>Architecture Note</strong>: Cloud Armor cannot be attached directly to a Cloud Run service. The agent provisions a <strong>Global External Application Load Balancer</strong> with a Serverless NEG and strictly locks down the Cloud Run ingress. <strong>Please note: Google Cloud Load Balancers can take 5-10 minutes to fully propagate their IP addresses globally.</strong> The agent&#39;s commands will succeed immediately, but the endpoint may return 404/502 errors until propagation completes.</p>
+<aside class="warning"><p><strong>Architecture Note</strong>: Cloud Armor cannot be attached directly to a Cloud Run service. The agent provisions a <strong>Global External Application Load Balancer</strong> with a Serverless NEG and strictly locks down the Cloud Run ingress. <strong>Please note: Google Cloud Load Balancers can take 5-10 minutes to fully propagate their IP addresses globally.</strong> The agent&#39;s commands will succeed immediately, but the endpoint may return 404/502 errors until propagation completes.</p>
+</aside>
 <h2 is-upgraded>Part 3: Canary Deployment</h2>
 <p>The <code>canary-deploy</code> skill reuses the <strong>existing container image</strong> (no rebuild!) and deploys a new revision without traffic, then gradually shifts:</p>
 <pre>IMAGE=$(gcloud run services describe enterprise-api \
@@ -538,7 +555,8 @@ gcloud run deploy enterprise-api \
   --region us-central1 \
   --to-tags canary=10
 </pre>
-<p>Positive : The agent will <strong>HALT</strong> after the 10% split and ask you: &#34;Do you want to promote to 100% or rollback?&#34; This is the Approval Gate in action!</p>
+<aside class="special"><p> The agent will <strong>HALT</strong> after the 10% split and ask you: &#34;Do you want to promote to 100% or rollback?&#34; This is the Approval Gate in action!</p>
+</aside>
 <h2 is-upgraded>Monitor the canary</h2>
 <pre>gcloud logging read &#39;resource.type=&#34;cloud_run_revision&#34; AND
   resource.labels.service_name=&#34;enterprise-api&#34; AND severity&gt;=ERROR&#39; \
