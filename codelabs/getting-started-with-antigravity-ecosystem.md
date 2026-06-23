@@ -95,7 +95,7 @@ gcloud services enable \
   secretmanager.googleapis.com \
   eventarc.googleapis.com \
   pubsub.googleapis.com \
-  sqladmin.googleapis.com \
+  aiplatform.googleapis.com \
   bigquery.googleapis.com \
   cloudbuild.googleapis.com \
   compute.googleapis.com \
