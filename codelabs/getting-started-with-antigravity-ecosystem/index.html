@@ -343,15 +343,8 @@ cd antigravitylab-01
 export PROJECT_ID=$(gcloud config get-value project)
 gcloud auth application-default login
 </pre>
-<p><em>(Note: If the </em></p>
-<p><em><code>gcloud auth application-default login</code></em></p>
-<p><em> command saves your credentials to a temporary </em></p>
-<p><em><code>/tmp/</code></em></p>
-<p><em> path, be sure to export that path via </em></p>
-<p><em><code>export GOOGLE_APPLICATION_CREDENTIALS=/tmp/.../application_default_credentials.json</code></em></p>
-<p><em> before proceeding. Make sure the </em></p>
-<p><em><code>cloudresourcemanager.googleapis.com</code></em></p>
-<p><em> API is enabled if prompted).</em></p>
+<aside class="warning"><p><strong>Important Note for Cloud Shell Users</strong>: If the <code>gcloud auth application-default login</code> command saves your credentials to a temporary <code>/tmp/</code> path, you must export that path via <code>export GOOGLE_APPLICATION_CREDENTIALS=/tmp/.../application_default_credentials.json</code> before proceeding. Ensure the <code>cloudresourcemanager.googleapis.com</code> API is enabled if prompted.</p>
+</aside>
 <p>Next, install the Python SDK:</p>
 <pre>pip install google-antigravity
 </pre>

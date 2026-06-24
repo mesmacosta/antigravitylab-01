@@ -383,7 +383,8 @@ export PROJECT_ID=$(gcloud config get-value project)
 gcloud auth application-default login
 ```
 
-*(Note: If the `gcloud auth application-default login` command saves your credentials to a temporary `/tmp/` path, be sure to export that path via `export GOOGLE_APPLICATION_CREDENTIALS=/tmp/.../application_default_credentials.json` before proceeding. Make sure the `cloudresourcemanager.googleapis.com` API is enabled if prompted).*
+> aside negative
+> **Important Note for Cloud Shell Users**: If the `gcloud auth application-default login` command saves your credentials to a temporary `/tmp/` path, you must export that path via `export GOOGLE_APPLICATION_CREDENTIALS=/tmp/.../application_default_credentials.json` before proceeding. Ensure the `cloudresourcemanager.googleapis.com` API is enabled if prompted.
 
 Next, install the Python SDK:
 
