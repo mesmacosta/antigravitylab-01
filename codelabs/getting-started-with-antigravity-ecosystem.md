@@ -451,29 +451,38 @@ async def main():
         location="global",
         policies=[allow("run_command")]
     )
-    
-    async with Agent(config) as agent:
-        print(f"\n🚀 Starting Data Engineer Workflow in {workspace_path}...\n")
-        
-        # Iteration 1
-        await run_workflow(agent, "/dataengineer")
-        
-        success, error_msg = verify_scripts()
-        
-        # Self-healing loop (max 1 retry)
-        if not success:
-            print("\n⚠️ Verification failed! Engaging self-healing loop for 1 retry...\n")
-            retry_prompt = (
-                f"The verification failed with the following error:\n{error_msg}\n"
-                "Please analyze the failure and run the necessary commands to fix it."
-            )
-            await run_workflow(agent, retry_prompt)
-            
-            # Verify again
-            success, _ = verify_scripts()
-            if not success:
-                print("\n❌ Workflow failed after retry. Please inspect manually.")
-                sys.exit(1)
+    max_retries = 10
+    for attempt in range(1, max_retries + 1):
+        try:
+            async with Agent(config) as agent:
+                print(f"\n🚀 Starting Data Engineer Workflow in {workspace_path}...\n")
+                
+                # Iteration 1
+                await run_workflow(agent, "/dataengineer")
+                
+                success, error_msg = verify_scripts()
+                
+                # Self-healing loop (max 1 retry)
+                if not success:
+                    print("\n⚠️ Verification failed! Engaging self-healing loop for 1 retry...\n")
+                    retry_prompt = (
+                        f"The verification failed with the following error:\n{error_msg}\n"
+                        "Please analyze the failure and run the necessary commands to fix it."
+                    )
+                    await run_workflow(agent, retry_prompt)
+                    
+                    # Verify again
+                    success, _ = verify_scripts()
+                    if not success:
+                        print("\n❌ Workflow failed after retry. Please inspect manually.")
+                        sys.exit(1)
+            break  # Success, exit retry loop
+        except Exception as e:
+            if "403" in str(e) and "Agent Platform API" in str(e):
+                print(f"\n⚠️ Vertex AI API propagating... Waiting 30s before retry {attempt}/{max_retries}...")
+                await asyncio.sleep(30)
+            else:
+                raise e
                 
 if __name__ == "__main__":
     asyncio.run(main())
