@@ -120,8 +120,7 @@ cd antigravitylab-01
 2. Open the `antigravitylab-01` folder as a workspace (e.g., via **File > Open Folder**).
 3. Start a new conversation in this workspace.
 
-> aside positive
-> **Troubleshooting Tip**: Generative AI workflows can occasionally get confused. If the agent ever seems stuck or provides an unexpected response, simply tell it to "Stop" and re-run your slash command, or open a fresh conversation.
+
 
 ### Explore the workspace structure
 
@@ -141,6 +140,7 @@ You should see:
 .agents/skills/inject-secrets/SKILL.md
 .agents/skills/inject-secrets/scripts/verify_secrets.sh
 .agents/skills/provision-bigquery-vector/SKILL.md
+.agents/skills/provision-bigquery-vector/scripts/seed_bq.py
 .agents/skills/provision-bigquery-vector/scripts/verify_bq_vector.sh
 .agents/skills/scaffold-cloud-run-service/SKILL.md
 .agents/skills/scaffold-cloud-run-service/scripts/validate_scaffold.py
@@ -149,6 +149,7 @@ You should see:
 .agents/skills/stream-to-bigquery/SKILL.md
 .agents/skills/stream-to-bigquery/scripts/verify_bq.sh
 .agents/skills/wire-pubsub-eventarc/SKILL.md
+.agents/skills/wire-pubsub-eventarc/scripts/verify_eventarc_e2e.sh
 .agents/skills/wire-pubsub-eventarc/scripts/verify_pubsub.sh
 .agents/workflows/architect.md
 .agents/workflows/dataengineer.md
@@ -157,7 +158,7 @@ You should see:
 ```
 
 > aside positive
-> **8 Skills** are pre-authored with hardcoded `gcloud` commands, validation scripts, and constraints. They act as guardrails — preventing the agent from deviating during the workshop.
+> **The Skills** are pre-authored with hardcoded `gcloud` commands, validation scripts, and constraints. They act as guardrails — preventing the agent from deviating during the workshop.
 
 ## Understand the Architecture
 Duration: 3:00
