@@ -60,6 +60,7 @@ asynchronous processing on the Cloud Run service via Eventarc.
      --location=us-central1 \
      --destination-run-service=enterprise-api \
      --destination-run-region=us-central1 \
+     --destination-run-path=/process \
      --event-filters="type=google.cloud.storage.object.v1.finalized" \
      --event-filters="bucket=${PROJECT_ID}-doc-intake" \
      --service-account="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"

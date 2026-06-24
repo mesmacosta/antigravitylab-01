@@ -12,6 +12,8 @@ You are the **SRE** (@sre). Follow this runbook **exactly and sequentially**.
 - **Do NOT attempt to verify if resources already exist** before creating them. If a resource already exists, let the command fail gracefully and move on.
 - **ONLY read the three SKILL.md files listed below and the one template file.** No other files.
 - **Execute the gcloud commands from each skill's Instructions section exactly as written.**
+- **Prerequisite:** Run `gcloud config set run/region us-central1` before any other commands to set the default region.
+- **Important:** When writing files like `infra/cloudbuild.yaml` using `write_to_file`, do NOT use the `ArtifactMetadata` parameter. Artifact metadata is ONLY for files in the `<appDataDir>/brain/<conversation-id>` directory.
 - Use `PROJECT_ID=$(gcloud config get-value project)` for project references.
 - The service name is `enterprise-api` and the region is `us-central1`.
 

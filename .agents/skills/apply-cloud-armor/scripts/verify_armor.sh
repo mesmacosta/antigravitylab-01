@@ -42,7 +42,7 @@ else
   exit 1
 fi
 
-INGRESS=$(gcloud run services describe enterprise-api --region us-central1 --format='value(spec.template.metadata.annotations."run.googleapis.com/ingress")')
+INGRESS=$(gcloud run services describe enterprise-api --region us-central1 --format='value(metadata.annotations."run.googleapis.com/ingress")')
 if [[ "$INGRESS" == "internal-and-cloud-load-balancing" ]]; then
   echo "✅ Cloud Run ingress is properly restricted."
 else
