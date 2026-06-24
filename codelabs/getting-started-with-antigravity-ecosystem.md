@@ -385,6 +385,8 @@ gcloud auth application-default login
 
 > aside negative
 > **Important Note for Cloud Shell Users**: If the `gcloud auth application-default login` command saves your credentials to a temporary `/tmp/` path, you must export that path via `export GOOGLE_APPLICATION_CREDENTIALS=/tmp/.../application_default_credentials.json` before proceeding. Ensure the `cloudresourcemanager.googleapis.com` API is enabled if prompted.
+> 
+> **Troubleshooting**: If you ever see `invalid token JSON from metadata: EOF` or a similar permission error later, it means Cloud Shell recycled and deleted your temporary credentials. Fix it by running: `unset GOOGLE_APPLICATION_CREDENTIALS`, re-running `gcloud auth application-default login`, and exporting the new path it provides.
 
 Next, install the Python SDK:
 

@@ -344,6 +344,7 @@ export PROJECT_ID=$(gcloud config get-value project)
 gcloud auth application-default login
 </pre>
 <aside class="warning"><p><strong>Important Note for Cloud Shell Users</strong>: If the <code>gcloud auth application-default login</code> command saves your credentials to a temporary <code>/tmp/</code> path, you must export that path via <code>export GOOGLE_APPLICATION_CREDENTIALS=/tmp/.../application_default_credentials.json</code> before proceeding. Ensure the <code>cloudresourcemanager.googleapis.com</code> API is enabled if prompted.</p>
+<p><strong>Troubleshooting</strong>: If you ever see <code>invalid token JSON from metadata: EOF</code> or a similar permission error later, it means Cloud Shell recycled and deleted your temporary credentials. Fix it by running: <code>unset GOOGLE_APPLICATION_CREDENTIALS</code>, re-running <code>gcloud auth application-default login</code>, and exporting the new path it provides.</p>
 </aside>
 <p>Next, install the Python SDK:</p>
 <pre>pip install google-antigravity
